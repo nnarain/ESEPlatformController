@@ -1,0 +1,10 @@
+# binary
+*.o
+*.a
+*.s19
+*.hex
+*.lst
+
+# tests
+test/*
+*test*
