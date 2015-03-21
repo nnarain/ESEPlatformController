@@ -1,17 +1,21 @@
 #include <hidef.h>      /* common defines and macros */
 #include "derivative.h"      /* derivative-specific definitions */
 
+#include "sci.h"
 
+#define FOREVER for(;;)
 
-void main(void) {
-  /* put your own code here */
-  
-
+void main(void) 
+{
+  // init the serial port
+  init_sci();
 
 	EnableInterrupts;
+	
+	// write a message
+	puts_sci("Hello World");
 
-  for(;;) {
+  FOREVER {
     _FEED_COP(); /* feeds the dog */
-  } /* loop forever */
-  /* please make sure that you never leave main */
+  }
 }
