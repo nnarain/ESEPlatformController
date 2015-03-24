@@ -2,20 +2,29 @@
 #include "derivative.h"      /* derivative-specific definitions */
 
 #include "sci.h"
+#include "leds.h"
+#include "util.h"
+#include "delay.h"
 
 #define FOREVER for(;;)
 
+
 void main(void) 
 {
-  // init the serial port
-  init_sci();
+    LEDS_INIT();
+    
+    LED_ON(LED1);
+    LED_OFF(LED2);
 
-	EnableInterrupts;
-	
-	// write a message
-	puts_sci("Hello World");
+    for(;;)
+    {
+        LED_TGL(LED1 | LED2);
+        delay_ms(1000);
+    }
 
-  FOREVER {
-    _FEED_COP(); /* feeds the dog */
-  }
+   // EnableInterrupts;
+
+    //FOREVER {
+    //_FEED_COP(); /* feeds the dog */
+   // }
 }

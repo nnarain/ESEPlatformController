@@ -5,6 +5,12 @@
 *.hex
 *.lst
 
+# project
+*.cmd
+*.abs
+*.abs.phy
+
+
 # tests
 test/*
 *test*
