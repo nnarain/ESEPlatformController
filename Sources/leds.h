@@ -2,6 +2,8 @@
 #ifndef LEDS_H
 #define LEDS_H
 
+#include "util.h"
+
 #define LED_PORT      PTS
 #define LED1          PTS_PTS2_MASK
 #define LED2          PTS_PTS3_MASK
