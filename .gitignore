@@ -9,6 +9,7 @@
 *.cmd
 *.abs
 *.abs.phy
+*.tdt
 
 
 # tests
