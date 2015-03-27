@@ -1,10 +1,10 @@
 OPEN source 0 0 60 99
 Source < attributes TOOLTIP on,TOOLTIP_FORMAT signed,TOOLTIP_MODE details,FREEZE off,MARKS off
 OPEN assembly 60 0 40 31
-Assembly < attributes ADR on,CODE off,ABSADR on,SYMB off,FORMAT Auto,FREEZE off,TOPPC 0xC029
+Assembly < attributes ADR on,CODE off,ABSADR on,SYMB off,FORMAT signed,FREEZE off,TOPPC 0xC03E
 OPEN memory 60 31 40 69
 Memory < attributes FORMAT hex,COMPLEMENT None,WORD 1,ASC on,ADR on,MODE automatic,UPDATERATE 10,ADDRESS 0x80
 bckcolor 50331647
 font 'Courier New' 9 BLACK
 AUTOSIZE on
-ACTIVATE "Assembly" "Source" "Memory"
+ACTIVATE "Source" "Memory" "Assembly"

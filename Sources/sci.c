@@ -10,10 +10,14 @@
 
 #define SCI_DIVISOR ( CLK / 16 / BAUD )
 
-void init_sci()
+#define RTS PTP_PTP0_MASK
+#define CTS PTP_PTP1_MASK
+
+void sci_init(void)
 {
   // set baud rate divisor
   SCIBD = SCI_DIVISOR;
+  //SCIBD = 52;
   
   // set N81 Serial Data
   SCICR1 = 0;
@@ -22,32 +26,32 @@ void init_sci()
   SET(SCICR2, SCICR2_RE_MASK | SCICR2_TE_MASK);
 }
 
-void write_sci(char c)
+void sci_write(char c)
 {
   while(IS_CLR(SCISR1, SCISR1_TDRE_MASK));
   SCIDRL = c;
 }
 
-char read_sci()
+char sci_read()
 {
   while(IS_CLR(SCISR1, SCISR1_RDRF_MASK));
   return SCIDRL;
 }
 
-void writen_sci(char *buff, unsigned int n)
+void sci_writen(char *buff, unsigned int n)
 {
   unsigned int i;
   for(i = 0; i < n; ++i)
   {
-    write_sci(buff[i]);
+    sci_write(buff[i]);
   }
 }
 
-void puts_sci(char *str)
+void sci_puts(char *str)
 {
   while(*str)
   {
-    write_sci(*str++);
+    sci_write(*str++);
   }
 }
 

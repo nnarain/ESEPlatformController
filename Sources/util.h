@@ -12,11 +12,11 @@
 #define BV(b) (1 << b)
 
 //! set mask y in x
-#define SET(x, y) (x |= y)
+#define SET(x, y) ((x) |= (y))
 //! clear mask y in x
-#define CLR(x, y) (x &= ~y)
+#define CLR(x, y) ((x) &= (~y)) // TODO : Possible loss of precision - when using uint
 //! toggle mask y in x
-#define TGL(x, y) (x ^= y)
+#define TGL(x, y) ((x) ^= (y))
 
 //! set bit y in x
 #define SET_BIT(x, y) ( SET( x, BV(y) ) )
@@ -24,6 +24,11 @@
 #define CLR_BIT(x, y) ( CLR( x, BV(y) ) )
 //! toggle bit y in x
 #define TGL_BIT(x, y) ( TGL( x, BV(y) ) )
+
+#define LOW(x) ( (x) & 0x0F)
+
+//!
+#define FORCE(reg, mask, value) ( (port) = ( (port) &  LOW(~(mask))) | ( (value) & (mask) ) )
 
 //! check if mask y is set in x
 #define IS_SET(x, y) ( x & y )
@@ -34,10 +39,15 @@
 //! check if bit y is clear in x
 #define IS_BIT_CLR(x,y) ( IS_CLR(x, BV(y)) )
 
+//!
+#define LOW_NYB(x) ((x) & 0x0F)
+//!
+#define HIGH_NYB(x) ( LOW_NYB((x) >> 4) )
+
 /* Bit pattern concatenation macros  */
 
 #define BIT_CAT(x, y, bits) ((x<<bits) + y)
-#define NIB_CAT(x, y)       ( BIT_CAT(x, y, 4) )
+#define NYB_CAT(x, y)       ( BIT_CAT(x, y, 4) )
 #define BYTE_CAT(x,y)       ( BIT_CAT(x, y, 8) )
 #define WORD_CAT(x,y)       ( BIT_CAT(x, y, 16) )
 

@@ -6,11 +6,11 @@
 /**
   Initialize the serial port
 */
-void init_sci(void);
+void sci_init(void);
 
 /**
 */
-void write_sci(char c);
+void sci_write(char c);
 
 /**
   Write n bytes from buff to the serial port
@@ -21,15 +21,15 @@ void write_sci(char c);
    @param n
     number of bytes to write
 */
-void writen_sci(char *buff, unsigned int n);
+void sci_writen(char *buff, unsigned int n);
 
 /**
   read a byte from the serial port
 */
-char read_sci();
+char sci_read(void);
 
 /**
 */
-void puts_sci(char *str);
+void sci_puts(char *str);
 
 #endif

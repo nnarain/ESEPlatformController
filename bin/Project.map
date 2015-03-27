@@ -16,7 +16,9 @@ mc9s12c32.c.o                           Model: SMALL,         Lang: ANSI-C
 main.c.o                                Model: SMALL,         Lang: ANSI-C
 Start12.c.o                             Model: SMALL,         Lang: ANSI-C
 rtshc12.c.o (ansis.lib)                 Model: SMALL,         Lang: ANSI-C
+sci.c.o                                 Model: SMALL,         Lang: ANSI-C
 delay.c.o                               Model: SMALL,         Lang: ANSI-C
+lcd.c.o                                 Model: SMALL,         Lang: ANSI-C
 
 *********************************************************************************************
 STARTUP SECTION
@@ -25,7 +27,7 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     0
-  _Copy    *toCopyDownBeg 0xC16F
+  _Copy    *toCopyDownBeg 0xC186
 } _startupData;
 
 *********************************************************************************************
@@ -34,8 +36,8 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.text                             81     R     0xC03B     0xC08B   ROM_C000
-.copy                              2     R     0xC16F     0xC170   ROM_C000
+.text                            104     R     0xC03B     0xC0A2   ROM_C000
+.copy                              2     R     0xC186     0xC187   ROM_C000
 .stack                           256   R/W      0x800      0x8FF   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
@@ -258,11 +260,11 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_fc                    2   N/I       0xFC       0xFD   .absSeg218
 .abs_section_16e                   2   N/I      0x16E      0x16F   .absSeg219
 .abs_section_17e                   2   N/I      0x17E      0x17F   .absSeg220
-RUNTIME                          227     R     0xC08C     0xC16E   ROM_C000
+RUNTIME                          227     R     0xC0A3     0xC185   ROM_C000
 .vectSeg221_vect                   2     R     0xFFFE     0xFFFF   .vectSeg221
 
 Summary of section sizes per section type:
-READ_ONLY (R):         173 (dec:      371)
+READ_ONLY (R):         18A (dec:      394)
 READ_WRITE (R/W):      100 (dec:      256)
 NO_INIT (N/I):         104 (dec:      260)
 
@@ -335,12 +337,12 @@ MODULE:                 -- mc9s12c32.c.o --
      _ATDSTAT1                                   8B       1       1       0   .abs_section_8b
      _ATDDIEN                                    8D       1       1       0   .abs_section_8d
      _PORTAD0                                    8F       1       1       0   .abs_section_8f
-     _SCICR1                                     CA       1       1       0   .abs_section_ca
-     _SCICR2                                     CB       1       1       0   .abs_section_cb
-     _SCISR1                                     CC       1       1       0   .abs_section_cc
+     _SCICR1                                     CA       1       1       1   .abs_section_ca
+     _SCICR2                                     CB       1       1       1   .abs_section_cb
+     _SCISR1                                     CC       1       1       1   .abs_section_cc
      _SCISR2                                     CD       1       1       0   .abs_section_cd
      _SCIDRH                                     CE       1       1       0   .abs_section_ce
-     _SCIDRL                                     CF       1       1       0   .abs_section_cf
+     _SCIDRL                                     CF       1       1       1   .abs_section_cf
      _SPICR1                                     D8       1       1       0   .abs_section_d8
      _SPICR2                                     D9       1       1       0   .abs_section_d9
      _SPIBR                                      DA       1       1       0   .abs_section_da
@@ -425,7 +427,7 @@ MODULE:                 -- mc9s12c32.c.o --
      _PERT                                      244       1       1       0   .abs_section_244
      _PPST                                      245       1       1       0   .abs_section_245
      _MODRR                                     247       1       1       0   .abs_section_247
-     _PTS                                       248       1       1       4   .abs_section_248
+     _PTS                                       248       1       1       0   .abs_section_248
      _PTIS                                      249       1       1       0   .abs_section_249
      _DDRS                                      24A       1       1       1   .abs_section_24a
      _RDRS                                      24B       1       1       0   .abs_section_24b
@@ -462,7 +464,7 @@ MODULE:                 -- mc9s12c32.c.o --
      _PERAD                                     274       1       1       0   .abs_section_274
      _PPSAD                                     275       1       1       0   .abs_section_275
      _PORTAB                                      0       2       2       0   .abs_section_0
-     _DDRAB                                       2       2       2       0   .abs_section_2
+     _DDRAB                                       2       2       2       1   .abs_section_2
      _PARTID                                     1A       2       2       0   .abs_section_1a
      _DBGTB                                      22       2       2       0   .abs_section_22
      _DBGCC                                      26       2       2       0   .abs_section_26
@@ -488,7 +490,7 @@ MODULE:                 -- mc9s12c32.c.o --
      _ATDDR5                                     9A       2       2       0   .abs_section_9a
      _ATDDR6                                     9C       2       2       0   .abs_section_9c
      _ATDDR7                                     9E       2       2       0   .abs_section_9e
-     _SCIBD                                      C8       2       2       0   .abs_section_c8
+     _SCIBD                                      C8       2       2       1   .abs_section_c8
      _PWMCNT01                                   EC       2       2       0   .abs_section_ec
      _PWMCNT23                                   EE       2       2       0   .abs_section_ee
      _PWMCNT45                                   F0       2       2       0   .abs_section_f0
@@ -502,7 +504,8 @@ MODULE:                 -- mc9s12c32.c.o --
      _CANTXTSR                                  17E       2       2       0   .abs_section_17e
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     main                                      C03B      1F      31       1   .text       
+     main                                      C03B      15      21       1   .text       
+     init_modules                              C050       A      10       1   .text       
 - VARIABLES:
 MODULE:                 -- Start12.c.o --
 - PROCEDURES:
@@ -514,14 +517,23 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                           900       0       0       1               
 MODULE:                 -- rtshc12.c.o (ansis.lib) --
 - PROCEDURES:
-     _LDEC                                     C08C       8       8       1   RUNTIME     
-     _LMULU16x32                               C094       F      15       1   RUNTIME     
-     _lDivMod                                  C0A3      BE     190       1   RUNTIME     
-     _LDIVU                                    C161       E      14       1   RUNTIME     
+     _LDEC                                     C0A3       8       8       1   RUNTIME     
+     _LMULU16x32                               C0AB       F      15       1   RUNTIME     
+     _lDivMod                                  C0BA      BE     190       1   RUNTIME     
+     _LDIVU                                    C178       E      14       1   RUNTIME     
+- VARIABLES:
+MODULE:                 -- sci.c.o --
+- PROCEDURES:
+     sci_init                                  C05A       B      11       1   .text       
+     sci_read                                  C065       7       7       1   .text       
 - VARIABLES:
 MODULE:                 -- delay.c.o --
 - PROCEDURES:
-     delay_ms                                  C05A      32      50       1   .text       
+     delay_ms                                  C06C      32      50       1   .text       
+- VARIABLES:
+MODULE:                 -- lcd.c.o --
+- PROCEDURES:
+     lcd_init                                  C09E       5       5       1   .text       
 - VARIABLES:
 
 *********************************************************************************************
@@ -532,14 +544,16 @@ MODULE STATISTIC
   main.c.o                                     0     31      0
   Start12.c.o                                  0     49      0
   rtshc12.c.o (ansis.lib)                      0    227      0
+  sci.c.o                                      0     18      0
   delay.c.o                                    0     50      0
+  lcd.c.o                                      0      5      0
   other                                      256     12      2
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
-  main delay_ms 
+  main init_modules sci_init sci_read delay_ms lcd_init 
 SECTION: ".init"
   Init _Startup 
 SECTION: ".abs_section_8"
@@ -992,7 +1006,7 @@ OBJECT LIST SORTED BY ADDRESS
      Name                                      Addr   hSize   dSize     Ref    Section   RLIB
 ---------------------------------------------------------------------------------------------
      _PORTAB                                      0       2       2       0   .abs_section_0
-     _DDRAB                                       2       2       2       0   .abs_section_2
+     _DDRAB                                       2       2       2       1   .abs_section_2
      _PORTE                                       8       1       1       0   .abs_section_8
      _DDRE                                        9       1       1       0   .abs_section_9
      _PEAR                                        A       1       1       0   .abs_section_a
@@ -1074,13 +1088,13 @@ OBJECT LIST SORTED BY ADDRESS
      _ATDDR5                                     9A       2       2       0   .abs_section_9a
      _ATDDR6                                     9C       2       2       0   .abs_section_9c
      _ATDDR7                                     9E       2       2       0   .abs_section_9e
-     _SCIBD                                      C8       2       2       0   .abs_section_c8
-     _SCICR1                                     CA       1       1       0   .abs_section_ca
-     _SCICR2                                     CB       1       1       0   .abs_section_cb
-     _SCISR1                                     CC       1       1       0   .abs_section_cc
+     _SCIBD                                      C8       2       2       1   .abs_section_c8
+     _SCICR1                                     CA       1       1       1   .abs_section_ca
+     _SCICR2                                     CB       1       1       1   .abs_section_cb
+     _SCISR1                                     CC       1       1       1   .abs_section_cc
      _SCISR2                                     CD       1       1       0   .abs_section_cd
      _SCIDRH                                     CE       1       1       0   .abs_section_ce
-     _SCIDRL                                     CF       1       1       0   .abs_section_cf
+     _SCIDRL                                     CF       1       1       1   .abs_section_cf
      _SPICR1                                     D8       1       1       0   .abs_section_d8
      _SPICR2                                     D9       1       1       0   .abs_section_d9
      _SPIBR                                      DA       1       1       0   .abs_section_da
@@ -1176,7 +1190,7 @@ OBJECT LIST SORTED BY ADDRESS
      _PERT                                      244       1       1       0   .abs_section_244
      _PPST                                      245       1       1       0   .abs_section_245
      _MODRR                                     247       1       1       0   .abs_section_247
-     _PTS                                       248       1       1       4   .abs_section_248
+     _PTS                                       248       1       1       0   .abs_section_248
      _PTIS                                      249       1       1       0   .abs_section_249
      _DDRS                                      24A       1       1       1   .abs_section_24a
      _RDRS                                      24B       1       1       0   .abs_section_24b
@@ -1214,12 +1228,16 @@ OBJECT LIST SORTED BY ADDRESS
      _PPSAD                                     275       1       1       0   .abs_section_275
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     main                                      C03B      1F      31       1   .text       
-     delay_ms                                  C05A      32      50       1   .text       
-     _LDEC                                     C08C       8       8       1   RUNTIME     
-     _LMULU16x32                               C094       F      15       1   RUNTIME     
-     _lDivMod                                  C0A3      BE     190       1   RUNTIME     
-     _LDIVU                                    C161       E      14       1   RUNTIME     
+     main                                      C03B      15      21       1   .text       
+     init_modules                              C050       A      10       1   .text       
+     sci_init                                  C05A       B      11       1   .text       
+     sci_read                                  C065       7       7       1   .text       
+     delay_ms                                  C06C      32      50       1   .text       
+     lcd_init                                  C09E       5       5       1   .text       
+     _LDEC                                     C0A3       8       8       1   RUNTIME     
+     _LMULU16x32                               C0AB       F      15       1   RUNTIME     
+     _lDivMod                                  C0BA      BE     190       1   RUNTIME     
+     _LDIVU                                    C178       E      14       1   RUNTIME     
 
 *********************************************************************************************
 UNUSED-OBJECTS SECTION
@@ -1231,6 +1249,10 @@ rtshc12.c.o (ansis.lib):
   _LMUL _LMULS16x32 _NEG_P _LDIVS _LMODU _LMODS _ILSEXT _COPY _CASE_DIRECT 
   _CASE_DIRECT_BYTE _CASE_CHECKED _CASE_CHECKED_BYTE _CASE_SEARCH 
   _CASE_SEARCH_BYTE _CASE_SEARCH_8 _CASE_SEARCH_8_BYTE _FCALL _FPCMP 
+sci.c.o:
+  sci_write sci_writen sci_puts 
+lcd.c.o:
+  lcd_putc lcd_puts lcd_printf lcd_data 
 NOT USED VARIABLES
 rtshc12.c.o (ansis.lib):
   _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
@@ -1238,7 +1260,7 @@ rtshc12.c.o (ansis.lib):
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC16F ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC186 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1247,8 +1269,12 @@ OBJECT-DEPENDENCIES SECTION
 ---------------------------------------------------------------------------------------------
 Init                      USES _startupData 
 _Startup                  USES __SEG_END_SSTACK Init main 
-main                      USES _DDRS _PTS delay_ms 
+main                      USES init_modules sci_read delay_ms 
+init_modules              USES _DDRS sci_init lcd_init 
+sci_init                  USES _SCIBD _SCICR1 _SCICR2 
+sci_read                  USES _SCISR1 _SCIDRL 
 delay_ms                  USES _LMULU16x32 _LDIVU _LDEC 
+lcd_init                  USES _DDRAB 
 _LDIVU                    USES _lDivMod 
 
 *********************************************************************************************
@@ -1258,6 +1284,14 @@ DEPENDENCY TREE
  | 
  +- main                
  |  | 
+ |  +- init_modules        
+ |  |  | 
+ |  |  +- sci_init            
+ |  |  |    
+ |  |  +- lcd_init            
+ |  |       
+ |  +- sci_read            
+ |  |    
  |  +- delay_ms            
  |     | 
  |     +- _LMULU16x32         
@@ -1280,6 +1314,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 6
-Total size of all blocks to be downloaded: 371
+Number of blocks to be downloaded: 5
+Total size of all blocks to be downloaded: 394
 

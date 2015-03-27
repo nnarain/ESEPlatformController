@@ -6,7 +6,7 @@
 void delay_ms(unsigned long ms)
 {
     unsigned long i;
-    unsigned long cycles = 2 * ms * CYCLES_PER_MS;
+    unsigned long cycles = ms * CYCLES_PER_MS;
     
     for(i = cycles; i > 0; --i);
 }

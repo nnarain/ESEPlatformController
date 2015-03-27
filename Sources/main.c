@@ -3,28 +3,38 @@
 
 #include "sci.h"
 #include "leds.h"
+#include "lcd.h"
+
 #include "util.h"
 #include "delay.h"
 
-#define FOREVER for(;;)
+/* Prototypes */
+
+void init_modules(void);
 
 
 void main(void) 
 {
-    LEDS_INIT();
-    
-    LED_ON(LED1);
-    LED_OFF(LED2);
+    init_modules();
 
     for(;;)
     {
-        LED_TGL(LED1 | LED2);
-        delay_ms(1000);
+        //sci_puts("Natesh Narain\n\r");
+        char c = sci_read();
+        lcd_putc(c);
+        delay_ms(1);
     }
 
-   // EnableInterrupts;
+    EnableInterrupts;
 
     //FOREVER {
     //_FEED_COP(); /* feeds the dog */
    // }
+}
+
+void init_modules(void)
+{
+    LEDS_INIT();
+    sci_init();
+    lcd_init();
 }
