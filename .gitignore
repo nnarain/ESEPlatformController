@@ -1,0 +1,32 @@
+# binary
+*.o
+*.a
+*.s19
+*.hex
+*.lst
+
+# project
+*.cmd
+*.abs
+*.abs.phy
+*.tdt
+*.stg
+*.map
+*.mcp
+*.ini
+*.hwc
+*.mem
+*.hwl
+*.prm
+*.bbl
+
+# Codewarrior Sources
+main.c
+Startup.c
+datapage.c
+derivative.h
+
+
+# tests
+test/*
+*test*
