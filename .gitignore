@@ -5,6 +5,20 @@
 *.hex
 *.lst
 
+# project
+*.cmd
+*.abs
+*.abs.phy
+*.tdt
+*.stg
+*.map
+*.mcp
+*.ini
+*.hwc
+
+main.c
+
+
 # tests
 test/*
 *test*
