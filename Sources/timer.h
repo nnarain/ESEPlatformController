@@ -46,6 +46,21 @@
 
 #define TIMER_CHNL_EVENT(chnl)      IS_BIT_SET(TFLG1, chnl)
 
+/* Output Compare Actions */
+
+#define TCTL_1_2 ( *(volatile word * const) &TCTL1 )
+
+#define TIMER_OC_ACTION_NO_ACTIONS 0x00
+#define TIMER_OC_ACTION_TOGGLE_PIN 0x01
+#define TIMER_OC_ACTION_DRIVE_LOW  0x02
+#define TIMER_OC_ACTION_DRIVE_HIGH 0x03
+
+#define TIMER_SET_OC_ACTION(chnl, action) FORCE_WORD( TCTL_1_2, ( 0x03 << ( (chnl) * 2 ) ), ( (action) << ((chnl) * 2) ) )
+
+#define TIMER_FORCE_OC_ACTION(chnl, action) \
+	TIMER_SET_OC_ACTION((chnl), (action)) \
+	SET_BIT(CFORC, BV(chnl))
+
 /*  */
 
 #define TCHNL(chnl) EVAL(TC, chnl)

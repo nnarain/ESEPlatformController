@@ -29,6 +29,7 @@
 
 //!
 #define FORCE(port, mask, value) ( (port) = ( (port) & (~(mask))) | ( (value) & (mask) ) )
+#define FORCE_WORD(port, mask, value) ( (port) = ( (port) & (~(mask) & 0xFFFF) | ( (value) & (mask) ) ) ) )
 
 //! check if mask y is set in x
 #define IS_SET(x, y) ( x & y )
