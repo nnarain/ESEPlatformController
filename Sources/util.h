@@ -28,7 +28,7 @@
 #define LOW(x) ( (x) & 0x0F)
 
 //!
-#define FORCE(reg, mask, value) ( (port) = ( (port) &  LOW(~(mask))) | ( (value) & (mask) ) )
+#define FORCE(port, mask, value) ( (port) = ( (port) & (~(mask))) | ( (value) & (mask) ) )
 
 //! check if mask y is set in x
 #define IS_SET(x, y) ( x & y )
@@ -51,4 +51,18 @@
 #define BYTE_CAT(x,y)       ( BIT_CAT(x, y, 8) )
 #define WORD_CAT(x,y)       ( BIT_CAT(x, y, 16) )
 
+/* Fancy */
+
+#define EVAL(x, y) x ## y
+
 #endif
+
+
+
+
+
+
+
+
+
+
