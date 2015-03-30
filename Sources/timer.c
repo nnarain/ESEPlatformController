@@ -1,0 +1,12 @@
+
+#include "timer.h"
+
+void timer_init(void)
+{
+	TIMER_SET_PRESCALER(TIMER_PRESCALER_64);
+
+	TIMER_DISABLE_ON_FREEZE();
+	TIMER_FANCY_FAST_CLEAR();
+	
+	TIMER_ENABLE();
+}

@@ -2,7 +2,7 @@
 ESE Embedded Controller Library
 ===============================
 
-Sources modules for the HCS12 base controller board built in Semester 2.
+Sources modules for the HCS12 base controller board built in Semester 4.
 
 Note this code uses CodeWarrior to compile, included in just individual modules
 

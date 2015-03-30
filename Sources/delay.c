@@ -1,12 +1,22 @@
 #include "delay.h"
 
-#define CYCLES_PER_SECOND 16000000UL
-#define CYCLES_PER_MS     (CYCLES_PER_SECOND / 1000UL) / 1000UL
-
-void delay_ms(unsigned long ms)
+void delay_ms(word ms)
 {
-    unsigned long i;
-    unsigned long cycles = ms * CYCLES_PER_MS;
-    
-    for(i = cycles; i > 0; --i);
+	int i;
+	
+	// set 1 ms into future
+	TC0 = TCNT + 125;
+	
+	// enable TCO for OC
+	TIMER_CHNL_MAKE_OC(0);
+	
+	for(i = ms; i >= 0; --i)
+	{
+		// wait for timer channel 0 event
+		while(!TIMER_CHNL_EVENT(0));
+		TC0 += 125;
+	}
+
+	// turn off OC on TC0
+	CLR_BIT(TIOS, 0);
 }
