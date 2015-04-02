@@ -57,10 +57,10 @@
 #define TCTL_1_2 EXPAND_PORT(TCTL1)
 #define TCTL_3_4 EXPAND_PORT(TCTL3)
 
-#define TIMER_OC_ACTION_NO_ACTIONS 0x00
-#define TIMER_OC_ACTION_TOGGLE_PIN 0x01
-#define TIMER_OC_ACTION_DRIVE_LOW  0x02
-#define TIMER_OC_ACTION_DRIVE_HIGH 0x03
+#define TIMER_OC_ACTION_NO_ACTIONS         0x00
+#define TIMER_OC_ACTION_TOGGLE_PIN         0x01
+#define TIMER_OC_ACTION_DRIVE_LOW          0x02
+#define TIMER_OC_ACTION_DRIVE_HIGH         0x03
 
 #define TIMER_IC_ACTION_NO_ACTION          0x00
 #define TIMER_IC_ACTION_RISING_EDGE        0x01
@@ -71,7 +71,7 @@
 #define TIMER_SET_IC_ACTION(chnl, action) FORCE_WORD( TCTL_3_4, ( 0x03 << ((chnl) * 2) ), ( (action) << ((chnl) * 2) ) )
 
 #define TIMER_FORCE_OC_ACTION(chnl, action) \
-	TIMER_SET_OC_ACTION((chnl), (action)) \
+	TIMER_SET_OC_ACTION((chnl), (action)); \
 	SET_BIT(CFORC, BV(chnl))
 
 /*  */
@@ -82,9 +82,9 @@
 
 #define TIMER_CHNL_DELAY 0
 
-/* Prototypes */
+/*  */
 
-void timer_init(void);
+#define TIMER_UNIT(mul, prescaler) ( (1/mul) / (prescaler / 8000000) )
 
 #endif
 
