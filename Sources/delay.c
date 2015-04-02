@@ -20,3 +20,24 @@ void delay_ms(word ms)
 	// turn off OC on TC0
 	CLR_BIT(TIOS, 0);
 }
+
+void delay_us(word us)
+{
+	int i;
+	
+	// set 1 ms into future
+	TC0 = TCNT + 1;
+	
+	// enable TCO for OC
+	TIMER_CHNL_MAKE_OC(0);
+	
+	for(i = us; i >= 0; --i)
+	{
+		// wait for timer channel 0 event
+		while(!TIMER_CHNL_EVENT(0));
+		TC0 += 1;
+	}
+
+	// turn off OC on TC0
+	CLR_BIT(TIOS, 0);
+}
