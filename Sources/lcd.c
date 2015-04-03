@@ -5,7 +5,7 @@
 #include "util.h"
 #include "delay.h"
 
-#define LCD_PORT     PORTA
+#define LCD_PORT     PORTA 
 #define LCD_DDR      DDRA
 #define LCD_DDR_INIT 0xFF
 
@@ -13,6 +13,8 @@
 #define LCD_RS_MASK  PORTA_BIT5_MASK
 #define LCD_RW_MASK  PORTA_BIT6_MASK
 #define LCD_BUS_MASK 0x0Fu
+
+#define LCD_BUSY_MASK 0x80
 
 #define LCD_E_LO() ( CLR(LCD_PORT, LCD_E_MASK) )
 #define LCD_E_HI() ( SET(LCD_PORT, LCD_E_MASK) )
@@ -25,12 +27,34 @@
 
 // set lcd R/~W line
 #define LCD_RW_WRITE() ( CLR(LCD_PORT, LCD_RW_MASK) ) // write mode
-#define LCD_RW_READ()  ( SET(CD_PORT, LCD_RW_MASK) )  // read mode
+#define LCD_RW_READ()  ( SET(LCD_PORT, LCD_RW_MASK) )  // read mode
 
-// lcd commands
+// lcd commands and configuration
 
-#define CLR_DISPLAY 0x01u
-#define HOME_CURSOR 0x02u
+#define LCD_CMD_FUNCTION     BV(5)
+#define LCD_2_LINE           BV(3)
+#define LCD_1_LINE           (0)
+#define LCD_FONT_5X10        BV(2)
+#define LCD_FONT_5X7         (0)
+#define LCD_MODE_8BIT        BV(4)
+#define LCD_MODE_4BIT        (0)
+
+#define LCD_CMD_DISPLAY      BV(3)
+#define LCD_DISPLAY_ON       BV(2)
+#define LCD_DISPLAY_OFF      (0)
+#define LCD_CURSOR_ON        BV(1)
+#define LCD_CURSOR_OFF       (0)
+#define LCD_BLINK_ON         BV(0)
+#define LCD_BLINK_OFF        (0)
+
+#define LCD_CMD_ENTRY        BV(2)
+#define LCD_INCREMENT_CURSOR BV(1)
+#define LCD_DECREMENT_CURSOR (0)
+#define LCD_SHIFT_WINDOW_ON  BV(0)
+#define LCD_SHIFT_WINDOW_OFF (0)
+
+#define LCD_CMD_CLR_DISPLAY  0x01
+#define HOME_CURSOR          0x02
 
 // command characters
 #define LINE_FEED '\n'
@@ -39,12 +63,20 @@
 /* Private Prototypes */
 
 static void lcd_data(unsigned char data);
+static unsigned char lcd_read(void);
+
 static void lcd_cmd(unsigned char cmd);
 
 void lcd_init(void)
 {
+	unsigned char cmd;
+	unsigned char busy = 0;
+
     // set lcd port directions
     SET(LCD_DDR, LCD_DDR_INIT);
+    
+    // wait 20 ms for power to initialize
+    delay_ms(20);
     
     // set to 4-bit mode
     LCD_E_HI();
@@ -70,7 +102,16 @@ void lcd_init(void)
     delay_ms(2);
     
     // configure display
+    lcd_cmd(LCD_CMD_FUNCTION | LCD_MODE_4BIT | LCD_2_LINE | LCD_FONT_5X7);
+    lcd_cmd(LCD_CMD_DISPLAY | LCD_DISPLAY_OFF);
     
+    lcd_clear();
+    
+    lcd_cmd(LCD_CMD_ENTRY | LCD_INCREMENT_CURSOR | LCD_SHIFT_WINDOW_OFF);
+    lcd_cmd(LCD_CMD_DISPLAY | LCD_DISPLAY_ON | LCD_CURSOR_OFF | LCD_BLINK_OFF);
+    
+    //while(IS_SET(lcd_read(), LCD_BUSY_MASK));
+    delay_ms(2);
 }
 
 void lcd_putc(char c)
@@ -103,6 +144,11 @@ void lcd_puts(char *str)
 void lcd_printf(char *fmt, ...)
 {
     char c = *fmt;
+}
+
+void lcd_clear(void)
+{
+	lcd_cmd(LCD_CMD_CLR_DISPLAY);
 }
 
 static void lcd_data(unsigned char data)
@@ -168,6 +214,32 @@ static void lcd_cmd(unsigned char cmd)
     
     // delay
     delay_ms(2); 
+}
+
+static unsigned char lcd_read(void)
+{
+	unsigned char data;
+	
+	// set LCD port bus as inputs
+	CLR(LCD_DDR, LCD_BUS_MASK);
+	
+	LCD_E_LO();
+	LCD_RS_IR();
+	LCD_RW_READ();
+	
+	LCD_E_HI();
+	data = (LCD_PORT & 0xF0);
+	LCD_E_LO();
+	
+	LCD_E_HI();
+	data |= (LCD_PORT & 0x0F);
+	LCD_E_LO();
+	
+	SET(LCD_DDR, LCD_BUS_MASK);
+	
+	delay_ms(2);
+	
+	return data;
 }
 
 
