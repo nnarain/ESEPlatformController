@@ -39,6 +39,10 @@
 #define LCD_MODE_8BIT        BV(4)
 #define LCD_MODE_4BIT        (0)
 
+#define LCD_CMD_CURSOR       BV(4)
+#define LCD_CURSOR_SHIFT_L   0x00
+#define LCD_CURSOR_SHIFT_R   0x04
+
 #define LCD_CMD_DISPLAY      BV(3)
 #define LCD_DISPLAY_ON       BV(2)
 #define LCD_DISPLAY_OFF      (0)
@@ -53,12 +57,15 @@
 #define LCD_SHIFT_WINDOW_ON  BV(0)
 #define LCD_SHIFT_WINDOW_OFF (0)
 
-#define LCD_CMD_CLR_DISPLAY  0x01
-#define HOME_CURSOR          0x02
+#define LCD_CMD_SET_DDRAM    BV(7)
+#define LCD_DDRAM_MASK       0x7F
 
-// command characters
-#define LINE_FEED '\n'
-#define HOME      '\r'
+#define LCD_CMD_CLR_DISPLAY  0x01
+#define LCD_CMD_HOME_CURSOR  0x02
+
+// escape characters
+#define ESC_LINE_FEED '\n'
+#define ESC_HOME      '\r'
 
 /* Private Prototypes */
 
@@ -69,9 +76,6 @@ static void lcd_cmd(unsigned char cmd);
 
 void lcd_init(void)
 {
-	unsigned char cmd;
-	unsigned char busy = 0;
-
     // set lcd port directions
     SET(LCD_DDR, LCD_DDR_INIT);
     
@@ -108,9 +112,8 @@ void lcd_init(void)
     lcd_clear();
     
     lcd_cmd(LCD_CMD_ENTRY | LCD_INCREMENT_CURSOR | LCD_SHIFT_WINDOW_OFF);
-    lcd_cmd(LCD_CMD_DISPLAY | LCD_DISPLAY_ON | LCD_CURSOR_OFF | LCD_BLINK_OFF);
+    lcd_cmd(LCD_CMD_DISPLAY | LCD_DISPLAY_ON | LCD_CURSOR_ON | LCD_BLINK_ON);
     
-    //while(IS_SET(lcd_read(), LCD_BUSY_MASK));
     delay_ms(2);
 }
 
@@ -125,11 +128,12 @@ void lcd_puts(char *str)
     {
         switch(*str)
         {
-            case LINE_FEED:
-                
+            case ESC_LINE_FEED:
+                lcd_cmd(LCD_CMD_SET_DDRAM | 0x40);
                 break;
-            case HOME:
-                lcd_cmd(HOME_CURSOR);
+                
+            case ESC_HOME:
+                lcd_cmd(LCD_CMD_HOME_CURSOR);
                 break;
                 
             default:
