@@ -35,6 +35,7 @@
 
 #define LCD_CMD_SET_DDRAM    BV(7)
 #define LCD_DDRAM_MASK       0x7F
+#define LCD_DDRAM_2ND_LINE   0x40
 
 #define LCD_CMD_SET_CGRAM    BV(6)
 #define LCD_CGRAM_LOC(loc)   ( ( (loc) & 0x07 ) << 3 )
@@ -199,10 +200,11 @@ void lcd_puts(char *str)
 {
     while(*str)
     {
+    	// check for special characters
         switch(*str)
         {
             case ESC_LINE_FEED:
-                lcd_cmd(LCD_CMD_SET_DDRAM | 0x40);
+                lcd_cmd(LCD_CMD_SET_DDRAM | LCD_DDRAM_2ND_LINE);
                 break;
                 
             case ESC_HOME:
