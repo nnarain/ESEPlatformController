@@ -5,6 +5,8 @@
 #include "util.h"
 #include "delay.h"
 
+#include <stdio.h>
+
 #define LCD_PORT     PORTA 
 #define LCD_DDR      DDRA
 #define LCD_DDR_INIT 0xFF
@@ -147,7 +149,14 @@ void lcd_puts(char *str)
 
 void lcd_printf(char *fmt, ...)
 {
-    char c = *fmt;
+    va_list args;
+    char buffer[32 + 1];
+    
+    va_start(args, fmt);
+    vsprintf(buffer, fmt, args);
+    va_end(args);
+    
+    lcd_puts(buffer);
 }
 
 void lcd_clear(void)
