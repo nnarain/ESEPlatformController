@@ -33,6 +33,14 @@
 
 // lcd commands and configuration
 
+#define LCD_CMD_SET_DDRAM    BV(7)
+#define LCD_DDRAM_MASK       0x7F
+
+#define LCD_CMD_SET_CGRAM    BV(6)
+#define LCD_CGRAM_LOC(loc)   ( ( (loc) & 0x07 ) << 3 )
+#define LCD_CGRAM_ROW(r)     ( (r) & 0x07 )
+#define LCD_CGRAM_DATA_MASK  0x1F
+
 #define LCD_CMD_FUNCTION     BV(5)
 #define LCD_2_LINE           BV(3)
 #define LCD_1_LINE           (0)
@@ -59,9 +67,6 @@
 #define LCD_SHIFT_WINDOW_ON  BV(0)
 #define LCD_SHIFT_WINDOW_OFF (0)
 
-#define LCD_CMD_SET_DDRAM    BV(7)
-#define LCD_DDRAM_MASK       0x7F
-
 #define LCD_CMD_CLR_DISPLAY  0x01
 #define LCD_CMD_HOME_CURSOR  0x02
 
@@ -72,10 +77,69 @@
 /* Private Prototypes */
 
 static void lcd_data(unsigned char data);
-static unsigned char lcd_read(void);
-
 static void lcd_cmd(unsigned char cmd);
 
+static unsigned char lcd_read(void);
+
+static void lcd_wait(void);
+
+// create a custom character in CG RAM
+static void lcd_cgram(char * buffer, char rows, char loc);
+
+/* custom character data */
+
+// Up Arrow
+static char upArrow[8] = 
+{
+	0b00000100,
+	0b00001110,
+	0b00011111,
+	0b00000100,
+	0b00000100,
+	0b00000100,
+	0b00000100,
+	0b00000000
+};
+
+static char heart[8] = 
+{
+	0b00000000,
+	0b00001010,
+	0b00011111,
+	0b00011111,
+	0b00011111,
+	0b00001110,
+	0b00000100,
+	0b00000000
+};
+
+static char smile[8] = 
+{
+	0b00000000,
+	0b00000000,
+	0b00001010,
+	0b00000000,
+	0b00010001,
+	0b00001110,
+	0b00000000,
+	0b00000000
+};
+
+static char person[8] = 
+{
+	0b00000100,
+	0b00001010,
+	0b00000100,
+	0b00010101,
+	0b00001110,
+	0b00000100,
+	0b00001010,
+	0b00001010
+};
+
+/**
+	Initialize the LCD in 4-bit 2 Line mode 
+*/
 void lcd_init(void)
 {
     // set lcd port directions
@@ -117,8 +181,15 @@ void lcd_init(void)
     lcd_cmd(LCD_CMD_DISPLAY | LCD_DISPLAY_ON | LCD_CURSOR_ON | LCD_BLINK_ON);
     
     delay_ms(2);
+    
+    // generate custom characters
+    lcd_cgram(upArrow, 8, LCD_CHAR_UP);
+    lcd_cgram(heart,   8, LCD_CHAR_HEART);
+    lcd_cgram(smile,   8, LCD_CHAR_SMILE);
+    lcd_cgram(person,  8, LCD_CHAR_PERSON);
 }
 
+// write a character to the display
 void lcd_putc(char c)
 {
     lcd_data(c);
@@ -164,6 +235,19 @@ void lcd_clear(void)
 	lcd_cmd(LCD_CMD_CLR_DISPLAY);
 }
 
+static void lcd_cgram(char * buffer, char rows, char loc)
+{
+	char n;
+	for(n = 0; n < rows; ++n)
+	{
+		lcd_cmd(LCD_CMD_SET_CGRAM | LCD_CGRAM_LOC(loc) | LCD_CGRAM_ROW(n));
+		lcd_data(buffer[n] & LCD_CGRAM_DATA_MASK);
+	}
+	
+    //
+    lcd_cmd(LCD_CMD_HOME_CURSOR);
+}
+
 static void lcd_data(unsigned char data)
 {
     // e clock low
@@ -193,7 +277,7 @@ static void lcd_data(unsigned char data)
     LCD_E_LO();
     
     // delay
-    delay_ms(2); 
+    delay_ms(2);
 }
 
 
@@ -226,7 +310,12 @@ static void lcd_cmd(unsigned char cmd)
     LCD_E_LO();
     
     // delay
-    delay_ms(2); 
+    delay_ms(2);
+}
+
+static void lcd_wait(void)
+{
+	while(lcd_read() & 0x80);
 }
 
 static unsigned char lcd_read(void)
@@ -250,11 +339,8 @@ static unsigned char lcd_read(void)
 	
 	SET(LCD_DDR, LCD_BUS_MASK);
 	
-	delay_ms(2);
-	
 	return data;
 }
-
 
 
 
