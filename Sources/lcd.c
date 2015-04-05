@@ -46,7 +46,7 @@
 #define LCD_2_LINE           BV(3)
 #define LCD_1_LINE           (0)
 #define LCD_FONT_5X10        BV(2)
-#define LCD_FONT_5X7         (0)
+#define LCD_FONT_5X8         (0)
 #define LCD_MODE_8BIT        BV(4)
 #define LCD_MODE_4BIT        (0)
 
@@ -173,13 +173,15 @@ void lcd_init(void)
     delay_ms(2);
     
     // configure display
-    lcd_cmd(LCD_CMD_FUNCTION | LCD_MODE_4BIT | LCD_2_LINE | LCD_FONT_5X7);
+    lcd_cmd(LCD_CMD_FUNCTION | LCD_MODE_4BIT);
+    lcd_cmd(LCD_CMD_FUNCTION | LCD_2_LINE | LCD_FONT_5X8);
     lcd_cmd(LCD_CMD_DISPLAY | LCD_DISPLAY_OFF);
     
     lcd_clear();
     
     lcd_cmd(LCD_CMD_ENTRY | LCD_INCREMENT_CURSOR | LCD_SHIFT_WINDOW_OFF);
-    lcd_cmd(LCD_CMD_DISPLAY | LCD_DISPLAY_ON | LCD_CURSOR_ON | LCD_BLINK_ON);
+    lcd_cmd(LCD_CMD_DISPLAY | LCD_CURSOR_ON | LCD_BLINK_ON);
+    lcd_cmd(LCD_CMD_DISPLAY | LCD_DISPLAY_ON);
     
     delay_ms(2);
     
@@ -252,30 +254,19 @@ static void lcd_cgram(char * buffer, char rows, char loc)
 
 static void lcd_data(unsigned char data)
 {
-    // e clock low
     LCD_E_LO();
     
     // select to write to the data register
     LCD_RS_DR();
     
-    // write mode
     LCD_RW_WRITE();
     
-    // e clock high
     LCD_E_HI();
-    
-    // write the high nybble of data to the lcd
     LCD_BUS(HIGH_NYB(data));
-    
-    // e clock low
     LCD_E_LO();
     
-    // e clock high
     LCD_E_HI();
-    
     LCD_BUS(LOW_NYB(data));
-    
-    // e clock low
     LCD_E_LO();
     
     // delay
@@ -285,33 +276,21 @@ static void lcd_data(unsigned char data)
 
 static void lcd_cmd(unsigned char cmd)
 {
-    // e clock low
     LCD_E_LO();
     
-    // select to write to the data register
+    // select to write to the instruction register
     LCD_RS_IR();
     
-    // write mode
     LCD_RW_WRITE();
     
-    // e clock high
     LCD_E_HI();
-    
-    // write the high nybble of data to the lcd
     LCD_BUS(HIGH_NYB(cmd));
-    
-    // e clock low
     LCD_E_LO();
     
-    // e clock high
     LCD_E_HI();
-    
     LCD_BUS(LOW_NYB(cmd));
-    
-    // e clock low
     LCD_E_LO();
     
-    // delay
     delay_ms(2);
 }
 
