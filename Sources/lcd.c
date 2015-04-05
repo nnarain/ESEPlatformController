@@ -180,8 +180,7 @@ void lcd_init(void)
     lcd_clear();
     
     lcd_cmd(LCD_CMD_ENTRY | LCD_INCREMENT_CURSOR | LCD_SHIFT_WINDOW_OFF);
-    lcd_cmd(LCD_CMD_DISPLAY | LCD_CURSOR_ON | LCD_BLINK_ON);
-    lcd_cmd(LCD_CMD_DISPLAY | LCD_DISPLAY_ON);
+    lcd_cmd(LCD_CMD_DISPLAY | LCD_DISPLAY_ON | LCD_CURSOR_ON | LCD_BLINK_ON);
     
     delay_ms(2);
     
