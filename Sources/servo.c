@@ -2,6 +2,7 @@
 #include "servo.h"
 #include "timer.h"
 #include "derivative.h"
+#include <hidef.h>
 
 #define SERVO_CHNL   2
 #define SERVO_VECTOR VectorNumber_Vtimch2
@@ -30,7 +31,15 @@ void servo_init(void)
 void servo_angle(unsigned int angle)
 {
 	unsigned int theta = angle % 180;
-	pulse = ((float)theta / 180.0f) * (float)(MAX + MIN);
+	float pulseWidth;
+	
+	pulseWidth = ((float)theta / 180.0f) * (float)(MAX + MIN);
+	
+	DisableInterrupts;
+	{
+		pulse = (unsigned int)pulseWidth;
+	}
+	EnableInterrupts;
 }
 
 interrupt SERVO_VECTOR void servo_handler(void)
