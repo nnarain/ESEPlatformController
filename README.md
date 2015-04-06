@@ -10,8 +10,9 @@ Modules
 -------
 
 * Serial Communication Interface ( sci )
-* Indicator LEDs ( leds )
-* LCD ( lcd )
+* Indicator LEDs                 ( leds )
+* LCD                            ( lcd )
+* Servo                          (servo)
 
 Utilities
 ---------
