@@ -23,7 +23,7 @@ void delay_ms(word ms)
 
 void delay_us(word us)
 {
-	int i;
+	word i;
 	
 	// set 1 ms into future
 	TC0 = TCNT + 1;
