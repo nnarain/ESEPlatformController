@@ -12,19 +12,23 @@
 
 /* Channel Masks */
 
-#define PWN_CHNL0_MASK BV(0)
-#define PWN_CHNL1_MASK BV(1)
-#define PWN_CHNL2_MASK BV(2)
-#define PWN_CHNL3_MASK BV(3)
-#define PWN_CHNL4_MASK BV(4)
-#define PWN_CHNL5_MASK BV(5)
-#define PWN_CHNL6_MASK BV(6)
-#define PWN_CHNL7_MASK BV(7)
+#define PWM_CHNL0_MASK BV(0)
+#define PWM_CHNL1_MASK BV(1)
+#define PWM_CHNL2_MASK BV(2)
+#define PWM_CHNL3_MASK BV(3)
+#define PWM_CHNL4_MASK BV(4)
+#define PWM_CHNL5_MASK BV(5)
+#define PWM_CHNL6_MASK BV(6)
+#define PWM_CHNL7_MASK BV(7)
 
 /* Enable \ Disable */
 
 #define PWM_ENABLE(mask)  SET(PWME, (mask))
 #define PWM_DISABLE(mask) CLR(PWME, (mask))
+
+/*  */
+
+#define PWM_8BIT_MODE() PWMCTL = 0;
 
 /* PWM Clock Prescaler */
 
