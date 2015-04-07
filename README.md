@@ -9,10 +9,11 @@ Note this code uses CodeWarrior to compile, included in just individual modules
 Modules
 -------
 
-* Serial Communication Interface ( sci )
-* Indicator LEDs                 ( leds )
-* LCD                            ( lcd )
+* Serial Communication Interface (sci)
+* Indicator LEDs                 (leds)
+* LCD                            (lcd)
 * Servo                          (servo)
+* PWM                            (pwm)
 
 Utilities
 ---------
