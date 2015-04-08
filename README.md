@@ -28,7 +28,7 @@ Utilities
 Protocol
 --------
 
-The Platform controller uses an ASCII protocol for communication wish the host. Using this form of protocol allows better cross communication with varying host platforms.
+The Platform controller uses an ASCII protocol for communication with the host. Using this form of protocol allows better cross communication with varying host platforms.
 
 The protocol consists of sending text packets in the form:
 
