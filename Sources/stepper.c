@@ -9,10 +9,10 @@
 #define STEPPER_DDR      DDRT
 #define STEPPER_DDR_INIT 0xF0
 
-#define NUM_STEPS        8
+#define STEP_MASK        0x07
 
 // stepper coil pattern
-static char stepTable[NUM_STEPS] = 
+static char stepTable[8] = 
 {
     0x80,
     0xA0,
@@ -64,7 +64,7 @@ interrupt VectorNumber_Vtimch4 void stepper_handler(void)
     
     FORCE(STEPPER_PORT, 0xF0, pattern);
     
-    idx = (idx + 1) % NUM_STEPS;
+    idx = (idx + 1) & STEP_MASK;
     
     TC4 += stepSpeed;
 
