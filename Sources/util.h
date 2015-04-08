@@ -63,6 +63,14 @@
 
 #define EVAL(x, y) x ## y
 
+/* Types */
+
+//! Boolean
+typedef enum 
+{
+	false = 0, true = 1
+}BOOL;
+
 #endif
 
 

@@ -4,6 +4,7 @@
 
 #include "sci.h"
 #include "util.h"
+#include "leds.h"
 
 #define CLK  8000000L
 #define BAUD 9600
@@ -15,43 +16,45 @@
 
 void sci_init(void)
 {
-  // set baud rate divisor
-  SCIBD = SCI_DIVISOR;
-  //SCIBD = 52;
-  
-  // set N81 Serial Data
-  SCICR1 = 0;
-  
-  // enable RX and TX
-  SET(SCICR2, SCICR2_RE_MASK | SCICR2_TE_MASK);
+	// set baud rate divisor
+	SCIBD = SCI_DIVISOR;
+
+	// set N81 Serial Data
+	SCICR1 = 0;
+
+	// enable RX and TX
+	SET(SCICR2, SCICR2_RE_MASK | SCICR2_TE_MASK);
+	
+	// enable recieve interrupts
+	SET(SCICR2, SCICR2_RIE_MASK);
 }
 
 void sci_write(char c)
 {
-  while(IS_CLR(SCISR1, SCISR1_TDRE_MASK));
-  SCIDRL = c;
+	while(IS_CLR(SCISR1, SCISR1_TDRE_MASK));
+	SCIDRL = c;
 }
 
 char sci_read()
 {
-  while(IS_CLR(SCISR1, SCISR1_RDRF_MASK));
-  return SCIDRL;
+	while(IS_CLR(SCISR1, SCISR1_RDRF_MASK));
+	return SCIDRL;
 }
 
 void sci_writen(char *buff, unsigned int n)
 {
-  unsigned int i;
-  for(i = 0; i < n; ++i)
-  {
-    sci_write(buff[i]);
-  }
+	unsigned int i;
+	for(i = 0; i < n; ++i)
+	{
+		sci_write(buff[i]);
+	}
 }
 
 void sci_puts(char *str)
 {
-  while(*str)
-  {
-    sci_write(*str++);
-  }
+	while(*str)
+	{
+		sci_write(*str++);
+	}
 }
 
