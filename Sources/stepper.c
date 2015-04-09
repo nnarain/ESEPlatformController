@@ -1,8 +1,15 @@
 
+/**
+	Stepper Motor Module 
+	
+	@author Natesh Narain
+*/
+
 #include "stepper.h"
 #include "timer.h"
 #include "util.h"
 #include "derivative.h"
+#include "adc.h"
 
 #define STEPPER_PORT     PTT
 
@@ -10,6 +17,11 @@
 #define STEPPER_DDR_INIT 0xF0
 
 #define STEP_MASK        0x07
+
+#define STEPPER_CHNL     4
+
+#define LIMIT_R          7
+#define LIMIT_L          6
 
 // stepper coil pattern
 static char stepTable[8] = 
@@ -23,10 +35,18 @@ static char stepTable[8] =
     0x10,
     0x80
 };
-
 static char idx = 0;
 
+static unsigned int stepsTo180;
 static unsigned int stepSpeed = 5000;
+
+static unsigned int currentCount = 0;
+
+/* Private Prototypes */
+
+static void stepper_home(void);
+
+/*************************************************************************/
 
 void stepper_init(void)
 {
@@ -44,17 +64,32 @@ void stepper_init(void)
     
     SET(STEPPER_DDR, STEPPER_DDR_INIT);
     
+    // initialize the limit switch ports
+    
+    // set as digital GPIO
+    ADC_SET_DIGITAL(LIMIT_L);
+    ADC_SET_DIGITAL(LIMIT_R);
+    
+    // set as input
+    CLR(DDRAD, BV(LIMIT_L) | BV(LIMIT_R));
+    
+    // home the stepper 
+    stepper_home();
+    
     //
-    
-    TC4 = TCNT + stepSpeed;
-    
-    TIMER_CHNL_ENABLE_INT(4);
-    
+    TIMER_CHNL_ENABLE_INT(STEPPER_CHNL);
 }
 
-void stepper_setPeriod(unsigned int speed)
+/**
+	Count the steps between the 2 limit switches and center the stepper
+*/
+static void stepper_home(void)
 {
-    stepSpeed = speed;
+	// find the first limit switch
+	
+	// step in the opposite direction to find the next switch
+	
+	// record number of steps between the limits
 }
 
 interrupt VectorNumber_Vtimch4 void stepper_handler(void)
@@ -66,7 +101,7 @@ interrupt VectorNumber_Vtimch4 void stepper_handler(void)
     
     idx = (idx + 1) & STEP_MASK;
     
-    TC4 += stepSpeed;
+    TCHNL(STEPPER_CHNL) += stepSpeed;
 
     return;
 }
