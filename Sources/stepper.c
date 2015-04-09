@@ -11,19 +11,29 @@
 #include "derivative.h"
 #include "adc.h"
 
-#define STEPPER_PORT     PTT
+#define STEPPER_PORT      PTT
 
-#define STEPPER_DDR      DDRT
-#define STEPPER_DDR_INIT 0xF0
+#define STEPPER_DDR       DDRT
+#define STEPPER_DDR_INIT  0xF0
 
-#define STEP_MASK        0x07
+#define STEP_MASK         0x07
 
-#define STEPPER_CHNL     4
+#define STEPPER_CHNL      4
 
-#define LIMIT_R          7
-#define LIMIT_L          6
+/* limit switches */
 
-// stepper coil pattern
+#define LIMIT_PORT        PTAD
+#define LIMIT_R           7
+#define LIMIT_L           6
+
+#define LIMIT_PRESSED(sw) IS_BIT_SET(LIMIT_PORT, sw)
+
+/**/
+
+#define LEFT   1
+#define RIGHT -1
+
+// stepper coil pattern table
 static char stepTable[8] = 
 {
     0x80,
@@ -35,12 +45,14 @@ static char stepTable[8] =
     0x10,
     0x80
 };
-static char idx = 0;
+// table index
+static unsigned char idx = 0;
+static signed   char direction = LEFT;
 
-static unsigned int stepsTo180;
+static unsigned int maxSteps;
 static unsigned int stepSpeed = 5000;
 
-static unsigned int currentCount = 0;
+static unsigned int currentPosition = 0;
 
 /* Private Prototypes */
 
@@ -86,10 +98,21 @@ void stepper_init(void)
 static void stepper_home(void)
 {
 	// find the first limit switch
+	while(!LIMIT_PRESSED(LIMIT_L))
+	{
+	
+	}
 	
 	// step in the opposite direction to find the next switch
-	
+	while(!LIMIT_PRESSED(LIMIT_R))
+	{
+
+	}
+
 	// record number of steps between the limits
+	maxSteps = currentPosition;
+	
+	//
 }
 
 interrupt VectorNumber_Vtimch4 void stepper_handler(void)
@@ -99,7 +122,8 @@ interrupt VectorNumber_Vtimch4 void stepper_handler(void)
     
     FORCE(STEPPER_PORT, 0xF0, pattern);
     
-    idx = (idx + 1) & STEP_MASK;
+    idx = (idx + direction) & STEP_MASK;
+    currentPosition += direction;
     
     TCHNL(STEPPER_CHNL) += stepSpeed;
 
