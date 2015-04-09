@@ -106,6 +106,7 @@ void stepper_setAngle(unsigned char angle)
     
     // start the timer channel cycle
     TCHNL(STEPPER_CHNL) = TCNT + stepSpeed;
+    TIMER_CHNL_ENABLE_INT(STEPPER_CHNL);
 }
 
 /**
@@ -133,16 +134,6 @@ static void stepper_home(void)
 
 interrupt VectorNumber_Vtimch4 void stepper_handler(void)
 {
-/*
-    unsigned char pattern = stepTable[idx];
-    
-    FORCE(STEPPER_PORT, 0xF0, pattern);
-    
-    idx = (idx + direction) & STEP_MASK;
-    currentPosition += direction;
-    
-    TCHNL(STEPPER_CHNL) += stepSpeed;
-*/
 
     unsigned char pattern;
     
@@ -160,6 +151,7 @@ interrupt VectorNumber_Vtimch4 void stepper_handler(void)
     else
     {
         (void)TCHNL(STEPPER_CHNL);
+        TIMER_CHNL_DISABLE_INT(STEPPER_CHNL);
     }
 
     return;

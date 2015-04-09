@@ -44,7 +44,8 @@
 #define TIMER_CHNL_MAKE_OC(chnl)    SET_BIT(TIOS, chnl)
 #define TIMER_CHNL_MAKE_IC(chnl)    CLR_BIT(TIOS, chnl)
 
-#define TIMER_CHNL_ENABLE_INT(chnl) SET_BIT(TIE, chnl)
+#define TIMER_CHNL_ENABLE_INT(chnl)  SET_BIT(TIE, chnl)
+#define TIMER_CHNL_DISABLE_INT(chnl) CLR_BIT(TIE, chnl)
 
 #define TIMER_CHNL_CLR_FLAG(flag)   TFLG1 = BV(flag)
 
