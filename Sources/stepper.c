@@ -49,10 +49,11 @@ static char stepTable[8] =
 static unsigned char idx = 0;
 static signed   char direction = LEFT;
 
-static unsigned int maxSteps;
+static unsigned int maxSteps = 100;
 static unsigned int stepSpeed = 5000;
 
 static unsigned int currentPosition = 0;
+static unsigned int targetPosition;
 
 /* Private Prototypes */
 
@@ -86,10 +87,25 @@ void stepper_init(void)
     CLR(DDRAD, BV(LIMIT_L) | BV(LIMIT_R));
     
     // home the stepper 
-    stepper_home();
+    //stepper_home();
     
     //
     TIMER_CHNL_ENABLE_INT(STEPPER_CHNL);
+}
+
+void stepper_setAngle(unsigned char angle)
+{
+    int diff;
+    
+    // calculate the target position
+    targetPosition = ( (float)angle / 180.0f ) * maxSteps;
+    
+    // calculate the direction to move through the table
+    diff = targetPosition - currentPosition;
+    direction = (diff > 0) ? 1 : -1;
+    
+    // start the timer channel cycle
+    TCHNL(STEPPER_CHNL) = TCNT + stepSpeed;
 }
 
 /**
@@ -98,13 +114,13 @@ void stepper_init(void)
 static void stepper_home(void)
 {
 	// find the first limit switch
-	while(!LIMIT_PRESSED(LIMIT_L))
+	while(!LIMIT_PRESSED(LIMIT_R))
 	{
 	
 	}
 	
 	// step in the opposite direction to find the next switch
-	while(!LIMIT_PRESSED(LIMIT_R))
+	while(!LIMIT_PRESSED(LIMIT_L))
 	{
 
 	}
@@ -117,7 +133,7 @@ static void stepper_home(void)
 
 interrupt VectorNumber_Vtimch4 void stepper_handler(void)
 {
-
+/*
     unsigned char pattern = stepTable[idx];
     
     FORCE(STEPPER_PORT, 0xF0, pattern);
@@ -126,6 +142,25 @@ interrupt VectorNumber_Vtimch4 void stepper_handler(void)
     currentPosition += direction;
     
     TCHNL(STEPPER_CHNL) += stepSpeed;
+*/
+
+    unsigned char pattern;
+    
+    if(currentPosition != targetPosition)
+    {
+        pattern = stepTable[idx];
+        
+        FORCE(STEPPER_PORT, 0xF0, pattern);
+        
+        idx = (idx + direction) & STEP_MASK;
+        currentPosition += direction;
+        
+        TCHNL(STEPPER_CHNL) += stepSpeed;
+    }
+    else
+    {
+        (void)TCHNL(STEPPER_CHNL);
+    }
 
     return;
 }
