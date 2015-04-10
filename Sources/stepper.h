@@ -12,4 +12,6 @@ void stepper_init(void);
 
 void stepper_setAngle(unsigned char angle);
 
+unsigned char stepper_isBusy(void);
+
 #endif

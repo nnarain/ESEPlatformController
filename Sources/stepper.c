@@ -56,6 +56,8 @@ static unsigned int stepSpeed = 5000;
 static unsigned int currentPosition = 0;
 static unsigned int targetPosition;
 
+static volatile unsigned char busy;
+
 /* Private Prototypes */
 
 static void stepper_home(void);
@@ -100,6 +102,8 @@ void stepper_setAngle(unsigned char angle)
 {
     int diff;
     
+    angle = angle % 180;
+    
     // calculate the target position
     targetPosition = ( (float)angle / 180.0f ) * maxSteps;
     
@@ -110,6 +114,13 @@ void stepper_setAngle(unsigned char angle)
     // start the timer channel cycle
     TCHNL(STEPPER_CHNL) = TCNT + stepSpeed;
     TIMER_CHNL_ENABLE_INT(STEPPER_CHNL);
+    
+    busy = 1;
+}
+
+unsigned char stepper_isBusy(void)
+{
+    return busy;
 }
 
 /**
@@ -167,6 +178,7 @@ interrupt VectorNumber_Vtimch4 void stepper_handler(void)
     {
         (void)TCHNL(STEPPER_CHNL);
         TIMER_CHNL_DISABLE_INT(STEPPER_CHNL);
+        busy = 0;
     }
 
     return;
