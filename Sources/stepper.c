@@ -50,11 +50,13 @@ static char stepTable[8] =
 static unsigned char idx = 0;
 static signed   char direction = RIGHT;
 
-static unsigned int maxSteps = 100;
+static unsigned int maxSteps;
 static unsigned int stepSpeed = 5000;
 
-static unsigned int currentPosition = 0;
+static unsigned int currentPosition;
 static unsigned int targetPosition;
+
+static StepMode stepMode;
 
 static volatile unsigned char busy;
 
@@ -91,6 +93,9 @@ void stepper_init(void)
     // set as input
     CLR(DDRAD, BV(LIMIT_L) | BV(LIMIT_R));
     
+    stepMode = STEP_HALF;
+    direction = -1 * stepMode;
+    
     // home the stepper 
     stepper_home();
     
@@ -109,13 +114,18 @@ void stepper_setAngle(unsigned char angle)
     
     // calculate the direction to move through the table
     diff = targetPosition - currentPosition;
-    direction = (diff > 0) ? 1 : -1;
+    direction = (diff > 0) ? stepMode : -1 * stepMode;
     
     // start the timer channel cycle
     TCHNL(STEPPER_CHNL) = TCNT + stepSpeed;
     TIMER_CHNL_ENABLE_INT(STEPPER_CHNL);
     
     busy = 1;
+}
+
+void stepper_setStepMode(StepMode mode)
+{
+    stepMode = mode;
 }
 
 unsigned char stepper_isBusy(void)
