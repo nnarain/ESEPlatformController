@@ -10,6 +10,7 @@
 #include "util.h"
 #include "derivative.h"
 #include "adc.h"
+#include "delay.h"
 
 #define STEPPER_PORT      PTT
 
@@ -23,10 +24,10 @@
 /* limit switches */
 
 #define LIMIT_PORT        PTAD
-#define LIMIT_R           7
-#define LIMIT_L           6
+#define LIMIT_R           6
+#define LIMIT_L           7
 
-#define LIMIT_PRESSED(sw) IS_BIT_SET(LIMIT_PORT, sw)
+#define LIMIT_PRESSED(sw) IS_BIT_CLR(LIMIT_PORT, sw)
 
 /**/
 
@@ -47,7 +48,7 @@ static char stepTable[8] =
 };
 // table index
 static unsigned char idx = 0;
-static signed   char direction = LEFT;
+static signed   char direction = RIGHT;
 
 static unsigned int maxSteps = 100;
 static unsigned int stepSpeed = 5000;
@@ -58,6 +59,8 @@ static unsigned int targetPosition;
 /* Private Prototypes */
 
 static void stepper_home(void);
+
+static void step(void);
 
 /*************************************************************************/
 
@@ -87,7 +90,7 @@ void stepper_init(void)
     CLR(DDRAD, BV(LIMIT_L) | BV(LIMIT_R));
     
     // home the stepper 
-    //stepper_home();
+    stepper_home();
     
     //
     TIMER_CHNL_ENABLE_INT(STEPPER_CHNL);
@@ -117,19 +120,37 @@ static void stepper_home(void)
 	// find the first limit switch
 	while(!LIMIT_PRESSED(LIMIT_R))
 	{
-	
+	    step();
+	    delay_ms(5);
 	}
 	
+	currentPosition = 0;
+	
 	// step in the opposite direction to find the next switch
+	direction *= -1;
 	while(!LIMIT_PRESSED(LIMIT_L))
 	{
-
+        step();
+        delay_ms(5);
 	}
 
 	// record number of steps between the limits
 	maxSteps = currentPosition;
 	
 	//
+}
+
+static void step(void)
+{
+    unsigned char pattern;
+
+    pattern = stepTable[idx];
+    
+    FORCE(STEPPER_PORT, 0xF0, pattern);
+    
+    idx = (idx + direction) & STEP_MASK;
+    currentPosition += direction;
+
 }
 
 interrupt VectorNumber_Vtimch4 void stepper_handler(void)
@@ -139,13 +160,7 @@ interrupt VectorNumber_Vtimch4 void stepper_handler(void)
     
     if(currentPosition != targetPosition)
     {
-        pattern = stepTable[idx];
-        
-        FORCE(STEPPER_PORT, 0xF0, pattern);
-        
-        idx = (idx + direction) & STEP_MASK;
-        currentPosition += direction;
-        
+        step();
         TCHNL(STEPPER_CHNL) += stepSpeed;
     }
     else
