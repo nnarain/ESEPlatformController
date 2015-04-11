@@ -12,7 +12,11 @@
 */
 unsigned char client_isPacketAvailable(void);
 
-/***/
-char * client_getNextPacket(void);
+/**
+	Load the next packet into the specified buffer
+	
+	@return 1 on success, 0 on failure
+*/
+int client_getNextPacket(char * packet);
 
 #endif
