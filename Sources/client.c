@@ -1,4 +1,10 @@
 
+/**
+	Host Communication 
+	
+	@author Natesh Narain
+*/
+
 #include "client.h"
 #include "sci.h"
 #include "derivative.h"
@@ -10,7 +16,6 @@
 
 #define PACKET_START     '<'
 #define PACKET_END       '>'
-#define PACKET_SEPARATOR '\0'
 
 #define MAX_PACKET_SIZE  20
 #define MAX_PACKET_COUNT 5
@@ -21,6 +26,8 @@
 
 // buffer for packet data
 static char packetBuffer[MAX_BUFFER_SIZE];
+
+// indices to keep track of the current read and write position
 static unsigned int writeIdx = 0;
 static unsigned int readIdx  = 0;;
 
@@ -52,7 +59,7 @@ int client_getNextPacket(char * packet)
 		packet[i++] = packetBuffer[nextIdx(&readIdx)];
 	}
 	
-	// insert the packet end character 
+	// insert the packet end character and complete with a null
 	packet[i++] = packetBuffer[nextIdx(&readIdx)];
 	packet[i] = '\0';
 	
@@ -63,6 +70,7 @@ int client_getNextPacket(char * packet)
 
 int client_parsePacketCommand(char * packet, char * cmd)
 {
+	// NOTE: the format %[A-Z] could not be use so I expanded it manually
 	return sscanf(packet, "<%[ABCDEFGHIJKLMNOPQRSTUVWXYZ]%*[^>]", cmd);
 }
 
@@ -84,6 +92,7 @@ int client_parsePacketArguments(char * packet, char * fmt, ...)
 	return ret;
 }
 
+#pragma INLINE
 static unsigned int nextIdx(unsigned int * idx)
 {
 	unsigned int ret = *idx;
