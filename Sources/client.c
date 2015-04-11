@@ -2,6 +2,7 @@
 #include "client.h"
 #include "sci.h"
 #include "derivative.h"
+#include <stdio.h>
 
 // DEBUG
 #include "leds.h"
@@ -23,7 +24,7 @@ static unsigned int writeIdx = 0;
 static unsigned int readIdx  = 0;;
 
 // Number of valid packets
-static unsigned int packetCount = 0;
+static volatile unsigned int packetCount = 0;
 
 /* Private Prototypes */
 
@@ -54,7 +55,14 @@ int client_getNextPacket(char * packet)
 	packet[i++] = packetBuffer[nextIdx(&readIdx)];
 	packet[i] = '\0';
 	
+	packetCount--;
+	
 	return 1;
+}
+
+int client_parsePacketCommand(char * packet, char * cmd)
+{
+	return sscanf(packet, "<%[ABCDEFGHIJKLMNOPQRSTUVWXYZ]%*[^>]", cmd);
 }
 
 static unsigned int nextIdx(unsigned int * idx)

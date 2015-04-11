@@ -19,4 +19,6 @@ unsigned char client_isPacketAvailable(void);
 */
 int client_getNextPacket(char * packet);
 
+int client_parsePacketCommand(char * packet, char * cmd);
+
 #endif
