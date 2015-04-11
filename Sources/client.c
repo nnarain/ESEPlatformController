@@ -18,7 +18,7 @@
 #define PACKET_END       '>'
 
 #define MAX_PACKET_SIZE  20
-#define MAX_PACKET_COUNT 5
+#define MAX_PACKET_COUNT 10
 #define MAX_BUFFER_SIZE  (MAX_PACKET_SIZE * MAX_PACKET_COUNT)
 
 // Error Detection
@@ -115,6 +115,11 @@ void client_sendToHost(char * cmd, const char * fmt, ...)
 	
 	// write to the serial port
 	sci_puts(packet);
+}
+
+void client_ping(void)
+{
+	client_sendToHost(PING, NULL, NULL);
 }
 
 #pragma INLINE

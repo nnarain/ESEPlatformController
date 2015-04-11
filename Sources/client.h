@@ -8,6 +8,10 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+/* Commands */
+
+#define PING "P"
+
 /**
 	Checks if a packet is available in the packet buffer
 	
@@ -43,7 +47,19 @@ int client_parsePacketCommand(char * packet, char * cmd);
 int client_parsePacketArguments(char * packet, char * fmt, ...);
 
 /**
+	Send a packet to the host
+	
+	@param id
+		The packet type
+		
+	@param fmt
+		formatted data
 */
-void client_sendToHost(char * cmd, const char * fmt, ...);
+void client_sendToHost(char * id, const char * fmt, ...);
+
+/**
+	Send a ping packet to the host
+*/
+void client_ping(void);
 
 #endif
