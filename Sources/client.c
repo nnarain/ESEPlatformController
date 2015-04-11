@@ -92,6 +92,31 @@ int client_parsePacketArguments(char * packet, char * fmt, ...)
 	return ret;
 }
 
+void client_sendToHost(char * cmd, const char * fmt, ...)
+{
+	va_list args;
+	char packet[MAX_PACKET_SIZE];
+	char format[20];
+	
+	// build format
+	if(fmt)
+	{
+		(void)sprintf(format, "<%s %s>", cmd, fmt);
+	}
+	else
+	{
+		(void)sprintf(format, "<%s>", cmd);
+	}
+	
+	// populate packet arguments
+	va_start(args, fmt);
+	(void)vsprintf(packet, format, args);
+	va_end(args);
+	
+	// write to the serial port
+	sci_puts(packet);
+}
+
 #pragma INLINE
 static unsigned int nextIdx(unsigned int * idx)
 {
@@ -101,7 +126,7 @@ static unsigned int nextIdx(unsigned int * idx)
 }
 
 // Serial Communication Interface Interrupt Handler
-interrupt VectorNumber_Vsci sci_handler(void)
+interrupt VectorNumber_Vsci void sci_handler(void)
 {
 	static unsigned char hasStart = 0;
 	
@@ -116,8 +141,6 @@ interrupt VectorNumber_Vsci sci_handler(void)
 			packetBuffer[nextIdx(&writeIdx)] = data;
 		
 			hasStart = 1;
-			
-			LED_OFF(LED1_MASK);
 		}
 		// check if at the end of a packet
 		else if(data == PACKET_END)
@@ -146,7 +169,6 @@ interrupt VectorNumber_Vsci sci_handler(void)
 			else
 			{
 				// garbage data, do nothing
-				LED_ON(LED1_MASK);
 			}
 		}
 		

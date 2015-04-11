@@ -42,4 +42,8 @@ int client_parsePacketCommand(char * packet, char * cmd);
 */
 int client_parsePacketArguments(char * packet, char * fmt, ...);
 
+/**
+*/
+void client_sendToHost(char * cmd, const char * fmt, ...);
+
 #endif
