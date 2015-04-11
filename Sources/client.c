@@ -3,6 +3,7 @@
 #include "sci.h"
 #include "derivative.h"
 #include <stdio.h>
+#include <stdarg.h>
 
 // DEBUG
 #include "leds.h"
@@ -63,6 +64,24 @@ int client_getNextPacket(char * packet)
 int client_parsePacketCommand(char * packet, char * cmd)
 {
 	return sscanf(packet, "<%[ABCDEFGHIJKLMNOPQRSTUVWXYZ]%*[^>]", cmd);
+}
+
+int client_parsePacketArguments(char * packet, char * fmt, ...)
+{
+	va_list args;
+	char format[50];
+	int ret;
+	
+	// build the format string
+	(void)sprintf(format, "<%%*s %s>", fmt);
+	
+	// parse the arguments using built format
+	va_start(args, fmt);
+	ret = vsscanf(packet, format, args);
+	va_end(args);
+	
+	// return number of successful conversions
+	return ret;
 }
 
 static unsigned int nextIdx(unsigned int * idx)
