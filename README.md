@@ -48,6 +48,13 @@ For example the ping instruction looks like:
 List of Valid Instructions
 --------------------------
 
+**Ping**
+
+	<P>
+
+Pinging the Platform Controller will cause it to respond with its own ping.
+
+
 Info
 ----
 

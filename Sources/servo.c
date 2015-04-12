@@ -23,6 +23,8 @@
 #define ANGLE_MAX 180.0f
 #define ANGLE_MIN 0 
 
+#define ANGLE_INIT 30
+
 /* Globals */
 
 // servo pulse width
@@ -36,6 +38,8 @@ void servo_init(void)
 	// trigger the servo cycle to start in 20ms and drive high
 	TIMER_SET_OC_ACTION(SERVO_CHNL, TIMER_OC_ACTION_DRIVE_HIGH);
 	TCHNL(SERVO_CHNL) = TCNT + DELAY_20MS;
+	
+	servo_angle(ANGLE_INIT);
 	
 	// enable interrupts for the servo's timer channel
 	TIMER_CHNL_ENABLE_INT(SERVO_CHNL);
