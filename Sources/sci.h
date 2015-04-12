@@ -11,6 +11,13 @@
 #include "util.h"
 #include "derivative.h"
 
+/* SCI Enable Control */
+
+#define SCI_RX_ENABLE_INT()  SET(SCICR2, SCICR2_RIE_MASK)
+#define SCI_RX_DISABLE_INT() CLR(SCICR2, SCICR2_RIE_MASK)
+
+/* SCI Status Flags */
+
 #define SCI_TDRE IS_SET(SCISR1, SCISR1_TDRE_MASK)
 #define SCI_TC   IS_SET(SCISR1, SCISR1_TC_MASK  )
 #define SCI_RDRF IS_SET(SCISR1, SCISR1_RDRF_MASK)
