@@ -12,6 +12,7 @@
 #define LCD_CHAR_HEART  3
 #define LCD_CHAR_SMILE  4 
 #define LCD_CHAR_PERSON 5
+#define LCD_CHAR_DOWN   6
 
 /**
 	Initialize the LCD Display

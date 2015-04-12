@@ -11,6 +11,7 @@
 /* Commands */
 
 #define PING "P"
+#define SYNC "Z"
 
 /**
 	Checks if a packet is available in the packet buffer
@@ -45,6 +46,11 @@ int client_parsePacketCommand(char * packet, char * cmd);
 	@return number of successful conversions
 */
 int client_parsePacketArguments(char * packet, char * fmt, ...);
+
+/**
+	Block until the Host sends a sync packet
+*/
+void client_syncHost();
 
 /**
 	Send a packet to the host
