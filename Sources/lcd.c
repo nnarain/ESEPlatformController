@@ -99,7 +99,7 @@ static char upArrow[8] =
 	0b00000100,
 	0b00000100,
 	0b00000100,
-	0b00000000
+	0b00000100
 };
 
 static char heart[8] = 
@@ -136,6 +136,18 @@ static char person[8] =
 	0b00000100,
 	0b00001010,
 	0b00001010
+};
+
+static char downArrow[8] = 
+{
+	0b00000100,
+	0b00000100,
+	0b00000100,
+	0b00000100,
+	0b00000100,
+	0b00011111,
+	0b00001110,
+	0b00000100
 };
 
 /**
@@ -185,10 +197,11 @@ void lcd_init(void)
     delay_ms(2);
     
     // generate custom characters
-    lcd_cgram(upArrow, 8, LCD_CHAR_UP);
-    lcd_cgram(heart,   8, LCD_CHAR_HEART);
-    lcd_cgram(smile,   8, LCD_CHAR_SMILE);
-    lcd_cgram(person,  8, LCD_CHAR_PERSON);
+    lcd_cgram(upArrow,   8, LCD_CHAR_UP);
+    lcd_cgram(heart,     8, LCD_CHAR_HEART);
+    lcd_cgram(smile,     8, LCD_CHAR_SMILE);
+    lcd_cgram(person,    8, LCD_CHAR_PERSON);
+    lcd_cgram(downArrow, 8, LCD_CHAR_DOWN);
 }
 
 // write a character to the display

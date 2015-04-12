@@ -10,6 +10,7 @@
 #include "derivative.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 
 // DEBUG
 #include "leds.h"
@@ -90,6 +91,33 @@ int client_parsePacketArguments(char * packet, char * fmt, ...)
 	
 	// return number of successful conversions
 	return ret;
+}
+
+void client_syncHost()
+{
+	char packet[MAX_PACKET_SIZE];
+	char cmd[5];
+	int synced;
+	
+	synced = 0;
+	
+	while(!synced)
+	{
+		// wait for a packet from the host
+		while(!client_isPacketAvailable());
+		
+		// read the packet
+		(void)client_getNextPacket(packet);
+		
+		//
+		if(client_parsePacketCommand(packet, cmd))
+		{
+			if(strcmp(cmd, SYNC) == 0)
+			{
+				synced = 1;
+			}
+		}
+	}
 }
 
 void client_sendToHost(char * cmd, const char * fmt, ...)
