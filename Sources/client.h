@@ -70,4 +70,9 @@ void client_sendToHost(char * id, const char * fmt, ...);
 */
 void client_ping(void);
 
+/**
+    Check for communication Error
+*/
+int client_comError(void);
+
 #endif

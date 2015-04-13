@@ -35,6 +35,9 @@ static unsigned int readIdx  = 0;;
 // Number of valid packets
 static volatile unsigned int packetCount = 0;
 
+// communication error flag
+static volatile int comError = 0;
+
 /* Private Prototypes */
 
 #pragma INLINE
@@ -150,6 +153,14 @@ void client_ping(void)
 	client_sendToHost(PING, NULL, NULL);
 }
 
+int client_comError(void)
+{
+    int ret = comError;
+    if(comError)
+        comError = 0;
+    return ret;
+}
+
 #pragma INLINE
 static unsigned int nextIdx(unsigned int * idx)
 {
@@ -188,7 +199,8 @@ interrupt VectorNumber_Vsci void sci_handler(void)
 			}
 			else
 			{
-				// garbage data, do nothing
+				// garbage data, set error flag
+				comError = 1;
 			}
 		}
 		// ordinary data
@@ -201,7 +213,8 @@ interrupt VectorNumber_Vsci void sci_handler(void)
 			}
 			else
 			{
-				// garbage data, do nothing
+				// garbage data, set error flag
+				comError = 1;
 			}
 		}
 		
