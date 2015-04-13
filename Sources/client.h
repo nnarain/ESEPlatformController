@@ -10,8 +10,10 @@
 
 /* Commands */
 
-#define PING "P"
-#define SYNC "Z"
+#define PING  "P"
+#define SYNC  "Z"
+#define SERVO "S"
+#define STEP  "ST"
 
 /**
 	Checks if a packet is available in the packet buffer
