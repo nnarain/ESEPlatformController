@@ -153,6 +153,11 @@ void client_ping(void)
 	client_sendToHost(PING, NULL, NULL);
 }
 
+void client_echo(char * msg)
+{
+    client_sendToHost(ECHO, "%s", msg);
+}
+
 int client_comError(void)
 {
     int ret = comError;

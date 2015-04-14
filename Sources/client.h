@@ -11,6 +11,7 @@
 /* Commands */
 
 #define PING  "P"
+#define ECHO  "E"
 #define SYNC  "Z"
 #define SERVO "S"
 #define STEP  "ST"
@@ -69,6 +70,10 @@ void client_sendToHost(char * id, const char * fmt, ...);
 	Send a ping packet to the host
 */
 void client_ping(void);
+
+/**
+*/
+void client_echo(char * msg);
 
 /**
     Check for communication Error
