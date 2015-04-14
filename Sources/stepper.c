@@ -44,7 +44,7 @@ static char stepTable[8] =
     0x40,
     0x50,
     0x10,
-    0x80
+    0x90
 };
 // table index
 static unsigned char idx = 0;
