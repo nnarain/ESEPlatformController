@@ -53,7 +53,7 @@ int client_getNextPacket(char * packet)
 	unsigned int i = 0;
 
 	// check if starting with a valid packet
-	if(packetBuffer[readIdx] != PACKET_START)
+	if(packetBuffer[nextIdx(&readIdx)] != PACKET_START)
 	{
 		return 0;
 	}
@@ -64,8 +64,9 @@ int client_getNextPacket(char * packet)
 	}
 	
 	// insert the packet end character and complete with a null
-	packet[i++] = packetBuffer[nextIdx(&readIdx)];
-	packet[i] = '\0';
+//	packet[i++] = packetBuffer[nextIdx(&readIdx)];
+    readIdx ++;
+	packet[i++] = '\0';
 	
 	packetCount--;
 	
@@ -75,7 +76,7 @@ int client_getNextPacket(char * packet)
 int client_parsePacketCommand(char * packet, char * cmd)
 {
 	// NOTE: the format %[A-Z] could not be use so I expanded it manually
-	return sscanf(packet, "<%[ABCDEFGHIJKLMNOPQRSTUVWXYZ]%*[^>]", cmd);
+	return sscanf(packet, "%[ABCDEFGHIJKLMNOPQRSTUVWXYZ]", cmd);
 }
 
 int client_parsePacketArguments(char * packet, char * fmt, ...)
@@ -85,7 +86,7 @@ int client_parsePacketArguments(char * packet, char * fmt, ...)
 	int ret;
 	
 	// build the format string
-	(void)sprintf(format, "<%%*s %s>", fmt);
+	(void)sprintf(format, "%%*s %s", fmt);
 	
 	// parse the arguments using built format
 	va_start(args, fmt);
