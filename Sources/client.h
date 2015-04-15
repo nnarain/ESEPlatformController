@@ -10,11 +10,13 @@
 
 /* Commands */
 
-#define PING  "P"
-#define ECHO  "E"
-#define SYNC  "Z"
-#define SERVO "S"
-#define STEP  "ST"
+#define PING      "P"
+#define ECHO      "E"
+#define SYNC      "Z"
+#define SERVO     "S"
+#define STEP      "ST"
+#define MTR_SPEED "MS"
+#define MTR_DIR   "MD"
 
 /**
 	Checks if a packet is available in the packet buffer

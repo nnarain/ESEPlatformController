@@ -33,7 +33,7 @@ void motors_init(void)
 	// configure motor enables
 	PWM_8BIT_MODE();
 	
-	PWM_SET_PRESCALE(PWM_PRESCALE_1, PWM_PRESCALE_1);
+	PWM_SET_PRESCALE(PWM_PRESCALE_128, PWM_PRESCALE_128);
 	
 	PWM_SET_CLK_SOURCE(MTR_L_EN);
 	PWM_SET_CLK_SOURCE(MTR_R_EN);
@@ -43,6 +43,9 @@ void motors_init(void)
 	
 	PWM_SET_ALIGN(MTR_L_EN, PWM_LEFT_ALIGN);
 	PWM_SET_ALIGN(MTR_R_EN, PWM_LEFT_ALIGN);
+	
+	PWM_PER_CHNL(MTR_L_EN) = 180;
+	PWM_PER_CHNL(MTR_R_EN) = 180;
 	
 	PWM_ENABLE(BV(MTR_L_EN) | BV(MTR_R_EN));
 
@@ -61,7 +64,7 @@ void motors_init(void)
 
 void motor_setSpeed(unsigned int speed)
 {
-	unsigned int duty = 50;
+	unsigned int duty = 100;
 	
 	// calculate duty from speed in cm/s
 	
@@ -75,7 +78,8 @@ void motor_setDirection(Motor m, MotorState state)
 	FORCE(MTR_DIR_PORT, (MTR_DIR_MASK << m), (motorState[state] << m));
 }
 
-interrupt VectorNumber_Vtimch0 void motorL_handler(void)
+
+interrupt VectorNumber_Vtimch0 void encoderL_handler(void)
 {
     LED_TGL(LED1_MASK);
     
@@ -84,7 +88,7 @@ interrupt VectorNumber_Vtimch0 void motorL_handler(void)
     return;
 }
 
-interrupt VectorNumber_Vtimch1 void motorR_handler(void)
+interrupt VectorNumber_Vtimch1 void encoderR_handler(void)
 {
     LED_TGL(LED2_MASK);
     

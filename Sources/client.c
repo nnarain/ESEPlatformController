@@ -30,7 +30,7 @@ static char packetBuffer[MAX_BUFFER_SIZE];
 
 // indices to keep track of the current read and write position
 static unsigned int writeIdx = 0;
-static unsigned int readIdx  = 0;;
+static unsigned int readIdx  = 0;
 
 // Number of valid packets
 static volatile unsigned int packetCount = 0;
@@ -64,7 +64,6 @@ int client_getNextPacket(char * packet)
 	}
 	
 	// insert the packet end character and complete with a null
-//	packet[i++] = packetBuffer[nextIdx(&readIdx)];
     readIdx ++;
 	packet[i++] = '\0';
 	
