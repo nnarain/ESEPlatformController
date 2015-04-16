@@ -130,12 +130,12 @@ static int dispatch(char * packet)
 		}
 		else if(strcmp(cmd, MTR_DIR) == 0)
 		{
-			Motor mtr;
+			int mtr;
 			MotorState state;
 			ret = client_parsePacketArguments(packet, "%d %d", &mtr, &state);
 			
 			if(ret)
-				motor_setDirection(mtr, state);
+				motor_setDirection((Motor)(mtr * 2), state);
 		}
 		else if(strcmp(cmd, ECHO) == 0)
 		{

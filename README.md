@@ -51,8 +51,14 @@ For example the ping instruction looks like:
 * 'P' command
 * No arguments
 
-List of Valid Instructions
---------------------------
+List of Valid Commands
+----------------------
+
+**Sync**
+
+	<Z>
+
+Before the platform enters its main command dispatch loop it must synchronize with the host. The platform will wait for this specific sync packet before continuing.
 
 **Ping**
 
@@ -60,6 +66,45 @@ List of Valid Instructions
 
 Pinging the Platform Controller will cause it to respond with its own ping.
 
+**Echo**
+
+	<E %s>
+
+Issuing an echo command will tell the platform to response with an identical packet.
+
+	Host:
+	<E hello>
+
+	Platform Response:
+	<E hello>
+
+**Servo Angle**
+
+	<S %d>
+
+Set the servo's angle.
+
+**Stepper Position**
+
+	<ST %d>
+
+Set the position of the stepper motor.
+
+**Motor Speed**
+
+	<MS %d>
+
+Set the speed of the motor in cm/s
+
+**Motor State**
+
+	<MD %d %d>
+
+Set the motors state of a specific motor.
+
+Argument 1 - Specified motor. (Left Motor = 0, Right Motor = 1)
+
+Argument 2 - Motor State.     (Off = 0, Forwards = 1, Backwards = 2)
 
 Info
 ----
