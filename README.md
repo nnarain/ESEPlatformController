@@ -14,10 +14,16 @@ Modules
 -------
 
 * Serial Communication Interface
+* Serial Peripheral Interface
+* Digital to Analog Converter
+* Timer Module
 * Indicator LEDs
 * LCD
 * Servo
-* PWM
+* Stepper Motor Control
+* DC Motor Control
+* PWM Module
+* Platform to Host Communication Module
 
 Utilities
 ---------

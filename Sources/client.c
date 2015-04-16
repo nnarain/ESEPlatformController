@@ -30,10 +30,13 @@ static char packetBuffer[MAX_BUFFER_SIZE];
 
 // indices to keep track of the current read and write position
 static unsigned int writeIdx = 0;
-static unsigned int readIdx  = 0;;
+static unsigned int readIdx  = 0;
 
 // Number of valid packets
 static volatile unsigned int packetCount = 0;
+
+// communication error flag
+static volatile int comError = 0;
 
 /* Private Prototypes */
 
@@ -50,7 +53,7 @@ int client_getNextPacket(char * packet)
 	unsigned int i = 0;
 
 	// check if starting with a valid packet
-	if(packetBuffer[readIdx] != PACKET_START)
+	if(packetBuffer[nextIdx(&readIdx)] != PACKET_START)
 	{
 		return 0;
 	}
@@ -61,8 +64,8 @@ int client_getNextPacket(char * packet)
 	}
 	
 	// insert the packet end character and complete with a null
-	packet[i++] = packetBuffer[nextIdx(&readIdx)];
-	packet[i] = '\0';
+    readIdx ++;
+	packet[i++] = '\0';
 	
 	packetCount--;
 	
@@ -72,7 +75,7 @@ int client_getNextPacket(char * packet)
 int client_parsePacketCommand(char * packet, char * cmd)
 {
 	// NOTE: the format %[A-Z] could not be use so I expanded it manually
-	return sscanf(packet, "<%[ABCDEFGHIJKLMNOPQRSTUVWXYZ]%*[^>]", cmd);
+	return sscanf(packet, "%[ABCDEFGHIJKLMNOPQRSTUVWXYZ]", cmd);
 }
 
 int client_parsePacketArguments(char * packet, char * fmt, ...)
@@ -82,7 +85,7 @@ int client_parsePacketArguments(char * packet, char * fmt, ...)
 	int ret;
 	
 	// build the format string
-	(void)sprintf(format, "<%%*s %s>", fmt);
+	(void)sprintf(format, "%%*s %s", fmt);
 	
 	// parse the arguments using built format
 	va_start(args, fmt);
@@ -93,7 +96,7 @@ int client_parsePacketArguments(char * packet, char * fmt, ...)
 	return ret;
 }
 
-void client_syncHost()
+void client_syncHost(void)
 {
 	char packet[MAX_PACKET_SIZE];
 	char cmd[5];
@@ -150,6 +153,18 @@ void client_ping(void)
 	client_sendToHost(PING, NULL, NULL);
 }
 
+void client_echo(char * msg)
+{
+    client_sendToHost(ECHO, "%s", msg);
+}
+
+int client_comError(void)
+{
+    int ret = comError;
+    comError = 0;
+    return ret;
+}
+
 #pragma INLINE
 static unsigned int nextIdx(unsigned int * idx)
 {
@@ -188,7 +203,8 @@ interrupt VectorNumber_Vsci void sci_handler(void)
 			}
 			else
 			{
-				// garbage data, do nothing
+				// garbage data, set error flag
+				comError = 1;
 			}
 		}
 		// ordinary data
@@ -201,7 +217,8 @@ interrupt VectorNumber_Vsci void sci_handler(void)
 			}
 			else
 			{
-				// garbage data, do nothing
+				// garbage data, set error flag
+				comError = 1;
 			}
 		}
 		

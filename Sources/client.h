@@ -10,8 +10,13 @@
 
 /* Commands */
 
-#define PING "P"
-#define SYNC "Z"
+#define PING      "P"
+#define ECHO      "E"
+#define SYNC      "Z"
+#define SERVO     "S"
+#define STEP      "ST"
+#define MTR_SPEED "MS"
+#define MTR_DIR   "MD"
 
 /**
 	Checks if a packet is available in the packet buffer
@@ -50,7 +55,7 @@ int client_parsePacketArguments(char * packet, char * fmt, ...);
 /**
 	Block until the Host sends a sync packet
 */
-void client_syncHost();
+void client_syncHost(void);
 
 /**
 	Send a packet to the host
@@ -67,5 +72,14 @@ void client_sendToHost(char * id, const char * fmt, ...);
 	Send a ping packet to the host
 */
 void client_ping(void);
+
+/**
+*/
+void client_echo(char * msg);
+
+/**
+    Check for communication Error
+*/
+int client_comError(void);
 
 #endif
