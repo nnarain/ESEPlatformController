@@ -21,7 +21,6 @@
 *.bbl
 
 # Codewarrior Sources
-main.c
 Startup.c
 datapage.c
 derivative.h
