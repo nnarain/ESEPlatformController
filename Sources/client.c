@@ -96,7 +96,7 @@ int client_parsePacketArguments(char * packet, char * fmt, ...)
 	return ret;
 }
 
-void client_syncHost()
+void client_syncHost(void)
 {
 	char packet[MAX_PACKET_SIZE];
 	char cmd[5];

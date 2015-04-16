@@ -55,7 +55,7 @@ int client_parsePacketArguments(char * packet, char * fmt, ...);
 /**
 	Block until the Host sends a sync packet
 */
-void client_syncHost();
+void client_syncHost(void);
 
 /**
 	Send a packet to the host
