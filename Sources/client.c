@@ -161,8 +161,7 @@ void client_echo(char * msg)
 int client_comError(void)
 {
     int ret = comError;
-    if(comError)
-        comError = 0;
+    comError = 0;
     return ret;
 }
 
