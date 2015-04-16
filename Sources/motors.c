@@ -20,13 +20,11 @@
 #define ENCODER_L 0
 #define ENCODER_R 1
 
-static unsigned char motorState[4] = 
-{
-	0x00, // Off
-	0x01, //
-	0x02, //
-	0x03  //
-};
+static unsigned int encoderRPeriod;
+static unsigned int encoderLPeriod;
+
+static unsigned int vaneCountL;
+static unsigned int vaneCountR;
 
 void motors_init(void)
 {
@@ -75,24 +73,28 @@ void motor_setSpeed(unsigned int speed)
 
 void motor_setDirection(Motor m, MotorState state)
 {
-	FORCE(MTR_DIR_PORT, (MTR_DIR_MASK << m), (motorState[state] << m));
+	FORCE(MTR_DIR_PORT, (MTR_DIR_MASK << m), (state << m));
 }
 
 
 interrupt VectorNumber_Vtimch0 void encoderL_handler(void)
 {
-    LED_TGL(LED1_MASK);
+    static unsigned int  t1 = 0;
     
-    (void)TCHNL(ENCODER_L);
+    encoderLPeriod = TCHNL(ENCODER_L) - t1;
+    t1 = TCHNL(ENCODER_L);
 
+    LED_TGL(LED1_MASK);
     return;
 }
 
 interrupt VectorNumber_Vtimch1 void encoderR_handler(void)
 {
+    static unsigned int  t1 = 0;
+    
+    encoderLPeriod = TCHNL(ENCODER_R) - t1;
+    t1 = TCHNL(ENCODER_R);
+
     LED_TGL(LED2_MASK);
-    
-    (void)TCHNL(ENCODER_L);
-    
 	return;
 }
