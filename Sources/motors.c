@@ -1,3 +1,11 @@
+/**
+	DC Motor Control Module
+	
+	Set speed and direction of motor
+	Use PI Controller for feedback
+	
+	@author Natesh Narain
+*/
 
 #include "motors.h"
 #include "timer.h"
@@ -19,6 +27,16 @@
 
 #define ENCODER_L 0
 #define ENCODER_R 1
+
+#define CONTROL_HANDLER VectorNumber_Vtimch5
+#define CONTROL_CHNL    5
+
+#define SAMPLE_RATE 500
+
+#define P_GAIN 0
+#define I_GAIN 0
+
+static unsigned int setPoint;
 
 static unsigned int encoderRPeriod;
 static unsigned int encoderLPeriod;
@@ -58,13 +76,21 @@ void motors_init(void)
     TIMER_CHNL_MAKE_IC(ENCODER_R);
     TIMER_SET_IC_ACTION(ENCODER_R, TIMER_IC_ACTION_RISING_EDGE);
     TIMER_CHNL_ENABLE_INT(ENCODER_R);
+    
+    // configure the control law interrupt 
+    TIMER_CHNL_MAKE_OC(CONTROL_CHNL);
+    TIMER_SET_OC_ACTION(CONTROL_CHNL, TIMER_OC_ACTION_NO_ACTION);
+    TIMER_CHNL_ENABLE_INT(CONTROL_CHNL);
+    
+    // run the control law handler
+    TCHNL(CONTROL_CHNL) = TCNT + SAMPLE_RATE;
 }
 
 void motor_setSpeed(unsigned int speed)
 {
 	unsigned int duty = 100;
 	
-	// calculate duty from speed in cm/s
+	// calculate setpoint
 	
 	// set duty cycle
 	PWM_DTY_CHNL(MTR_L_EN) = speed;
@@ -76,13 +102,34 @@ void motor_setDirection(Motor m, MotorState state)
 	FORCE(MTR_DIR_PORT, (MTR_DIR_MASK << m), (state << m));
 }
 
+interrupt CONTROL_HANDLER void control_handler(void)
+{
+	static unsigned int iE = 0; // error integral
+
+	// calculate speed
+	
+	// get error
+	
+	// accumulate error ( error integral )
+	
+	//
+
+	// set next sample time
+	TCHNL(CONTROL_CHNL) += SAMPLE_RATE;
+
+	return ;
+}
 
 interrupt VectorNumber_Vtimch0 void encoderL_handler(void)
 {
     static unsigned int  t1 = 0;
     
+    // calculate the period
     encoderLPeriod = TCHNL(ENCODER_L) - t1;
     t1 = TCHNL(ENCODER_L);
+
+	// count number of encoder vanes
+	vaneCountL++;
 
     LED_TGL(LED1_MASK);
     return;
@@ -92,8 +139,12 @@ interrupt VectorNumber_Vtimch1 void encoderR_handler(void)
 {
     static unsigned int  t1 = 0;
     
+    // calculate the period
     encoderLPeriod = TCHNL(ENCODER_R) - t1;
     t1 = TCHNL(ENCODER_R);
+
+	// count number of encoder vanes
+	vaneCountR++;
 
     LED_TGL(LED2_MASK);
 	return;
