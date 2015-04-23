@@ -107,7 +107,7 @@ static int dispatch(char * packet)
 		else if(strcmp(cmd, SERVO) == 0)
 		{
 		    unsigned int angle;;
-		    ret = client_parsePacketArguments(packet, "%d", &angle);
+		    ret = client_parsePacketArguments(packet, "%d", &angle) == 1;
 		    
 		    if(ret)
 		        servo_angle(angle);
@@ -115,7 +115,7 @@ static int dispatch(char * packet)
 		else if(strcmp(cmd, STEP) == 0)
 		{
 		    unsigned int angle;
-		    ret = client_parsePacketArguments(packet, "%d", &angle);
+		    ret = client_parsePacketArguments(packet, "%d", &angle) == 1;
 		    
 		    if(ret)
 		        stepper_setAngle(angle);
@@ -123,7 +123,7 @@ static int dispatch(char * packet)
 		else if(strcmp(cmd, MTR_SPEED) == 0)
 		{
 			unsigned int speed;
-			ret = client_parsePacketArguments(packet, "%d", &speed);
+			ret = client_parsePacketArguments(packet, "%d", &speed) == 1;
 			
 			if(ret)
 				motor_setSpeed(speed);
@@ -132,7 +132,7 @@ static int dispatch(char * packet)
 		{
 			int mtr;
 			MotorState state;
-			ret = client_parsePacketArguments(packet, "%d %d", &mtr, &state);
+			ret = client_parsePacketArguments(packet, "%d %d", &mtr, &state) == 2;
 			
 			if(ret)
 				motor_setDirection((Motor)(mtr * 2), state);
@@ -140,7 +140,7 @@ static int dispatch(char * packet)
 		else if(strcmp(cmd, ECHO) == 0)
 		{
 		    char msg[20];
-		    ret = client_parsePacketArguments(packet, "%s", msg);
+		    ret = client_parsePacketArguments(packet, "%s", msg) == 1;
 		    client_echo(msg);
 		}
 		else
