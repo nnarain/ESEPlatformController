@@ -191,10 +191,11 @@ interrupt VectorNumber_Vsci void sci_handler(void)
 {
 	static unsigned char hasStart = 0;
 	
+	const char reg  = SCISR1;
 	const char data = SCIDRL;
 
 	// check for recieved data
-	if(SCI_RDRF)
+	if(reg & SCISR1_RDRF_MASK)
 	{
 		// check if recieved the start of a packet
 		if(data == PACKET_START)

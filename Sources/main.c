@@ -61,19 +61,25 @@ void main(void)
                         	// return to sync mode on error
                         	break;
                         }
+                        else
+                        {
+                            client_ping();
+                         
+                        }// end if dispatch
                     }
                     else
                     {
                     	// return to sync mode on error
                         break;
-                    }
-                }
+                    } // end else get packet
+                    
+                } // end if is packet available
             }
             else
             {
             	// return to sync mode on error
                 break;
-            }
+            } // end else com error
         }
 	}
 	
@@ -147,6 +153,10 @@ static int dispatch(char * packet)
 		{
 			ret = 0;
 		}
+	}
+	else
+	{
+	    ret = 0;
 	}
 	
 	return ret;
