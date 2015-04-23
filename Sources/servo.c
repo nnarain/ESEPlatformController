@@ -18,7 +18,7 @@
 #define DELAY_20MS (20 * DELAY_1MS)
 
 #define PULSE_MAX 2400.0f // pulse width for +90
-#define PULSE_MIN 600.0f  // pulse width for -90
+#define PULSE_MIN 600  // pulse width for -90
 
 #define ANGLE_MAX 180.0f
 #define ANGLE_MIN 0 
@@ -47,16 +47,18 @@ void servo_init(void)
 
 void servo_angle(unsigned int angle)
 {
+	unsigned int pulseWidth;
+	
 	// limit angle to 180
-	unsigned int theta = angle % 180;
-	float pulseWidth;
+	if(angle > 180)
+		angle = 180;
 	
 	// scale range [0, 180] to [600, 2400]
-	pulseWidth = ( ((angle - ANGLE_MIN) / (ANGLE_MAX - ANGLE_MIN)) * (PULSE_MAX - PULSE_MIN) ) + PULSE_MIN;
+	pulseWidth = (10 * theta) + PULSE_MIN;
 	
 	DisableInterrupts;
 	{
-		pulse = (unsigned int)pulseWidth;
+		pulse = pulseWidth;
 	}
 	EnableInterrupts;
 }
