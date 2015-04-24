@@ -61,11 +61,6 @@ void main(void)
                         	// return to sync mode on error
                         	break;
                         }
-                        else
-                        {
-                            client_ping();
-                         
-                        }// end if dispatch
                     }
                     else
                     {
@@ -159,6 +154,11 @@ static int dispatch(char * packet)
 	    ret = 0;
 	}
 	
+	if(ret)
+	{
+		client_ping();
+	}
+	
 	return ret;
 	
 }
@@ -173,8 +173,8 @@ static void init_modules(void)
 	
 	lcd_init();
 	
-	stepper_init();
-	stepper_setAngle(90);
+//	stepper_init();
+//	stepper_setAngle(90);
 }
 
 static void timer_init(void)
