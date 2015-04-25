@@ -69,8 +69,8 @@ void motor_setSpeed(unsigned int speed)
 	// calculate duty from speed in cm/s
 	
 	// set duty cycle
-	PWM_DTY_CHNL(MTR_L_EN) = duty;
-	PWM_DTY_CHNL(MTR_R_EN) = duty;
+	PWM_DTY_CHNL(MTR_L_EN) = speed;
+	PWM_DTY_CHNL(MTR_R_EN) = speed;
 }
 
 void motor_setDirection(Motor m, MotorState state)

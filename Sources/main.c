@@ -66,14 +66,15 @@ void main(void)
                     {
                     	// return to sync mode on error
                         break;
-                    }
-                }
+                    } // end else get packet
+                    
+                } // end if is packet available
             }
             else
             {
             	// return to sync mode on error
                 break;
-            }
+            } // end else com error
         }
 	}
 	
@@ -107,7 +108,7 @@ static int dispatch(char * packet)
 		else if(strcmp(cmd, SERVO) == 0)
 		{
 		    unsigned int angle;;
-		    ret = client_parsePacketArguments(packet, "%d", &angle);
+		    ret = client_parsePacketArguments(packet, "%d", &angle) == 1;
 		    
 		    if(ret)
 		        servo_angle(angle);
@@ -115,7 +116,7 @@ static int dispatch(char * packet)
 		else if(strcmp(cmd, STEP) == 0)
 		{
 		    unsigned int angle;
-		    ret = client_parsePacketArguments(packet, "%d", &angle);
+		    ret = client_parsePacketArguments(packet, "%d", &angle) == 1;
 		    
 		    if(ret)
 		        stepper_setAngle(angle);
@@ -123,7 +124,7 @@ static int dispatch(char * packet)
 		else if(strcmp(cmd, MTR_SPEED) == 0)
 		{
 			unsigned int speed;
-			ret = client_parsePacketArguments(packet, "%d", &speed);
+			ret = client_parsePacketArguments(packet, "%d", &speed) == 1;
 			
 			if(ret)
 				motor_setSpeed(speed);
@@ -132,7 +133,7 @@ static int dispatch(char * packet)
 		{
 			int mtr;
 			MotorState state;
-			ret = client_parsePacketArguments(packet, "%d %d", &mtr, &state);
+			ret = client_parsePacketArguments(packet, "%d %d", &mtr, &state) == 2;
 			
 			if(ret)
 				motor_setDirection((Motor)(mtr * 2), state);
@@ -140,13 +141,22 @@ static int dispatch(char * packet)
 		else if(strcmp(cmd, ECHO) == 0)
 		{
 		    char msg[20];
-		    ret = client_parsePacketArguments(packet, "%s", msg);
+		    ret = client_parsePacketArguments(packet, "%s", msg) == 1;
 		    client_echo(msg);
 		}
 		else
 		{
 			ret = 0;
 		}
+	}
+	else
+	{
+	    ret = 0;
+	}
+	
+	if(ret)
+	{
+		client_ping();
 	}
 	
 	return ret;
@@ -163,8 +173,8 @@ static void init_modules(void)
 	
 	lcd_init();
 	
-	//stepper_init();
-	//stepper_setAngle(90);
+//	stepper_init();
+//	stepper_setAngle(90);
 }
 
 static void timer_init(void)

@@ -54,7 +54,7 @@ void servo_angle(unsigned int angle)
 		angle = 180;
 	
 	// scale range [0, 180] to [600, 2400]
-	pulseWidth = (10 * theta) + PULSE_MIN;
+	pulseWidth = (10 * angle) + PULSE_MIN;
 	
 	DisableInterrupts;
 	{

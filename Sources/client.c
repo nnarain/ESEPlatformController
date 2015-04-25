@@ -43,6 +43,9 @@ static volatile int comError = 0;
 #pragma INLINE
 static unsigned int nextIdx(unsigned int * idx);
 
+#pragma INLINE
+static void client_reset(void);
+
 unsigned char client_isPacketAvailable(void)
 {
 	return packetCount > 0;
@@ -64,7 +67,7 @@ int client_getNextPacket(char * packet)
 	}
 	
 	// insert the packet end character and complete with a null
-    readIdx ++;
+    (void)nextIdx(&readIdx);
 	packet[i++] = '\0';
 	
 	packetCount--;
@@ -75,7 +78,7 @@ int client_getNextPacket(char * packet)
 int client_parsePacketCommand(char * packet, char * cmd)
 {
 	// NOTE: the format %[A-Z] could not be use so I expanded it manually
-	return sscanf(packet, "%[ABCDEFGHIJKLMNOPQRSTUVWXYZ]", cmd);
+	return sscanf(packet, "%s", cmd);
 }
 
 int client_parsePacketArguments(char * packet, char * fmt, ...)
@@ -103,6 +106,8 @@ void client_syncHost(void)
 	int synced;
 	
 	synced = 0;
+	
+	//client_reset();
 	
 	while(!synced)
 	{
@@ -166,6 +171,14 @@ int client_comError(void)
 }
 
 #pragma INLINE
+static void client_reset(void)
+{
+    packetCount = 0;
+    writeIdx    = 0;
+    readIdx     = 0;
+}
+
+#pragma INLINE
 static unsigned int nextIdx(unsigned int * idx)
 {
 	unsigned int ret = *idx;
@@ -178,17 +191,25 @@ interrupt VectorNumber_Vsci void sci_handler(void)
 {
 	static unsigned char hasStart = 0;
 	
+	const char reg  = SCISR1;
 	const char data = SCIDRL;
 
 	// check for recieved data
-	if(SCI_RDRF)
+	if(reg & SCISR1_RDRF_MASK)
 	{
 		// check if recieved the start of a packet
 		if(data == PACKET_START)
 		{
-			packetBuffer[nextIdx(&writeIdx)] = data;
-		
-			hasStart = 1;
+            if(!hasStart)
+            {
+                packetBuffer[nextIdx(&writeIdx)] = data;
+
+                hasStart = 1;
+            }
+            else
+            {
+                comError = 1;
+            }
 		}
 		// check if at the end of a packet
 		else if(data == PACKET_END)
