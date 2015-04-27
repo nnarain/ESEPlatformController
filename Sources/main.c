@@ -17,6 +17,7 @@
 #include "servo.h"
 #include "stepper.h"
 #include "motors.h"
+#include "adc.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -32,6 +33,8 @@ static int dispatch(char * packet);
 void main(void) 
 {
 	char packet[20];
+	unsigned int data0;
+	unsigned int data1;
 
 	init_modules();
 
@@ -169,6 +172,7 @@ static void init_modules(void)
 	sci_init();
 	servo_init();
 	motors_init();
+	adc_init();
 	LEDS_INIT();
 	
 	lcd_init();
