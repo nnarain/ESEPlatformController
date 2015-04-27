@@ -57,7 +57,7 @@
 #define WORD_CAT(x,y)       ( BIT_CAT(x, y, 16) )
 
 //!
-#define EXPAND_PORT(port)( *(volatile word * const) &port )
+#define EXPAND_PORT(port)( *(volatile word * const) &(port) )
 
 /* Fancy */
 
