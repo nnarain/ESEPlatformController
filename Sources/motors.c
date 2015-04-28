@@ -140,7 +140,7 @@ interrupt VectorNumber_Vtimch1 void encoderR_handler(void)
     static unsigned int  t1 = 0;
     
     // calculate the period
-    encoderLPeriod = TCHNL(ENCODER_R) - t1;
+    encoderRPeriod = TCHNL(ENCODER_R) - t1;
     t1 = TCHNL(ENCODER_R);
 
 	// count number of encoder vanes
