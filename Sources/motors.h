@@ -45,4 +45,12 @@ void motor_setSpeed(unsigned int speed);
 */
 void motor_setDirection(Motor m, MotorState state);
 
+/**
+*/
+unsigned int motor_getSpeedR(void);
+
+/**
+*/
+unsigned int motor_getSpeedL(void);
+
 #endif

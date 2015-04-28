@@ -36,10 +36,12 @@
 #define P_GAIN 0
 #define I_GAIN 0
 
+#define TRAVEL 274100UL
+
 static unsigned int setPoint;
 
-static unsigned int encoderRPeriod;
-static unsigned int encoderLPeriod;
+static unsigned int encoderRPeriod = 1;
+static unsigned int encoderLPeriod = 1;
 
 static unsigned int vaneCountL;
 static unsigned int vaneCountR;
@@ -101,6 +103,18 @@ void motor_setDirection(Motor m, MotorState state)
 {
 	FORCE(MTR_DIR_PORT, (MTR_DIR_MASK << m), (state << m));
 }
+
+
+unsigned int motor_getSpeedR(void)
+{
+	return TRAVEL / (unsigned long)encoderRPeriod;
+}
+
+unsigned int motor_getSpeedL(void)
+{
+	return TRAVEL / (unsigned long)encoderLPeriod;
+}
+
 
 interrupt CONTROL_HANDLER void control_handler(void)
 {
