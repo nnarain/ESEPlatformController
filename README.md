@@ -111,10 +111,10 @@ Info
 
 **Related blog posts**
 
-[HCS12 Design Complete](http://nnarain.github.io/2015/02/28/HCS12%20Board%20Complete!.html)
+[HCS12 Design Complete](https://nnarain.github.io/2015/02/28/HCS12-Board-Complete!.html)
 
-[Board Assembly](http://nnarain.github.io/2015/03/18/Board%20Assembly!!!.html)
+[Board Assembly](https://nnarain.github.io/2015/03/18/Board-Assembly!!!.html)
 
-[Board Bring Up](http://nnarain.github.io/2015/03/27/Board%20Bring%20Up.html)
+[Board Bring Up](https://nnarain.github.io/2015/03/27/Board-Bring-Up.html)
 
 
